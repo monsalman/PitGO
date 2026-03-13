@@ -23,7 +23,7 @@ Ensure you have the following installed:
 
 ### 2. Clone the Repository
 ```bash
-git clone https://github.com/your-username/PitGO.git
+git clone https://github.com/monsalman/PitGO.git
 cd PitGO
 ```
 
@@ -87,6 +87,3 @@ php artisan serve
 Visit `http://127.0.0.1:8000` to see the application.
 
 ---
-
-## 📄 License
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
