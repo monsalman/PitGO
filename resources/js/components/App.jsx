@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import L from 'leaflet';
 import Login from './Login';
 import Register from './Register';
@@ -33,70 +34,73 @@ const createWorkshopIcon = () => {
     });
 };
 
-const Navbar = ({ onLogoClick, onLoginClick, onRegisterClick, user, onLogout }) => (
-    <nav className="sticky top-0 z-[100] flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
-        <div className="flex items-center space-x-2 cursor-pointer" onClick={onLogoClick}>
-            <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200 transition-transform hover:scale-105 active:scale-95">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" />
-                </svg>
-            </div>
-            <span className="text-2xl font-black text-gray-900 tracking-tight">Pit<span className="text-orange-500 italic">GO</span></span>
-        </div>
-        <div className="hidden md:flex items-center space-x-10">
-            <a href="#" onClick={(e) => { e.preventDefault(); onLogoClick(); }} className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
-                Beranda
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
-            </a>
-            <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
-                Layanan
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
-            </a>
-            <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
-                Cara Kerja
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
-            </a>
-            <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
-                Darurat
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
-            </a>
-        </div>
-        <div className="flex items-center space-x-6">
-            {user ? (
-                <div className="flex items-center space-x-4">
-                    <div className="flex flex-col items-end">
-                        <span className="text-sm font-black text-gray-400">
-                            Hai, <span className="text-gray-900">{user.name}</span>
-                        </span>
-                    </div>
-                    <button
-                        onClick={onLogout}
-                        className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all"
-                    >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                    </button>
+const Navbar = ({ user, onLogout }) => {
+    const navigate = useNavigate();
+    return (
+        <nav className="sticky top-0 z-[100] flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
+                <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200 transition-transform hover:scale-105 active:scale-95">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" />
+                    </svg>
                 </div>
-            ) : (
-                <>
-                    <button
-                        onClick={onLoginClick}
-                        className="text-sm font-bold text-gray-700 hover:text-orange-600 transition-colors"
-                    >
-                        Masuk
-                    </button>
-                    <button 
-                        onClick={onRegisterClick}
-                        className="px-6 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl hover:bg-orange-600 hover:shadow-orange-200 transition-all active:scale-95"
-                    >
-                        Daftar Sekarang
-                    </button>
-                </>
-            )}
-        </div>
-    </nav>
-);
+                <span className="text-2xl font-black text-gray-900 tracking-tight">Pit<span className="text-orange-500 italic">GO</span></span>
+            </div>
+            <div className="hidden md:flex items-center space-x-10">
+                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
+                    Beranda
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
+                </a>
+                <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
+                    Layanan
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
+                </a>
+                <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
+                    Cara Kerja
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
+                </a>
+                <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
+                    Darurat
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
+                </a>
+            </div>
+            <div className="flex items-center space-x-6">
+                {user ? (
+                    <div className="flex items-center space-x-4">
+                        <div className="flex flex-col items-end">
+                            <span className="text-sm font-black text-gray-400">
+                                Hai, <span className="text-gray-900">{user.name}</span>
+                            </span>
+                        </div>
+                        <button
+                            onClick={onLogout}
+                            className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        <button
+                            onClick={() => navigate('/login')}
+                            className="text-sm font-bold text-gray-700 hover:text-orange-600 transition-colors"
+                        >
+                            Masuk
+                        </button>
+                        <button
+                            onClick={() => navigate('/register')}
+                            className="px-6 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl hover:bg-orange-600 hover:shadow-orange-200 transition-all active:scale-95"
+                        >
+                            Daftar Sekarang
+                        </button>
+                    </>
+                )}
+            </div>
+        </nav>
+    );
+};
 
 const Hero = ({ onSearch }) => (
     <div className="relative min-h-[calc(100vh-88px)] bg-gray-50 overflow-hidden isolate">
@@ -663,16 +667,25 @@ const Footer = () => (
 );
 
 const App = () => {
-    const [view, setView] = useState('home');
     const [user, setUser] = useState(null);
+    const [authLoading, setAuthLoading] = useState(true);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const checkAuth = async () => {
             try {
                 const response = await axios.get('/user');
-                setUser(response.data);
+                if (response.data && response.data.user) {
+                    setUser(response.data.user);
+                } else {
+                    setUser(null);
+                }
             } catch (err) {
-                console.log('Not logged in');
+                console.log('Session check: Not logged in');
+                setUser(null);
+            } finally {
+                setAuthLoading(false);
             }
         };
         checkAuth();
@@ -680,66 +693,71 @@ const App = () => {
 
     const handleLoginSuccess = (userData) => {
         setUser(userData);
-        setView('home');
+        navigate('/');
     };
 
     const handleRegisterSuccess = (userData) => {
         setUser(userData);
-        setView('home');
+        navigate('/');
     };
 
     const handleLogout = async () => {
         try {
             await axios.post('/logout');
             setUser(null);
-            setView('home');
+            navigate('/');
         } catch (err) {
             console.error('Logout failed', err);
         }
     };
 
-    if (view === 'login') {
+    if (authLoading) {
         return (
-            <Login
-                onLoginSuccess={handleLoginSuccess}
-                onBackToHome={() => setView('home')}
-            />
-        );
-    }
-
-    if (view === 'register') {
-        return (
-            <Register 
-                onRegisterSuccess={handleRegisterSuccess} 
-                onBackToHome={() => setView('home')}
-                onLoginClick={() => setView('login')}
-            />
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
         );
     }
 
     return (
         <div className="min-h-screen font-sans selection:bg-orange-100 selection:text-orange-900 scroll-smooth">
-            <Navbar
-                onLogoClick={() => setView('home')}
-                onLoginClick={() => setView('login')}
-                onRegisterClick={() => setView('register')}
-                user={user}
-                onLogout={handleLogout}
-            />
+            {location.pathname !== '/login' && location.pathname !== '/register' && (
+                <Navbar
+                    user={user}
+                    onLogout={handleLogout}
+                />
+            )}
 
-            {view === 'home' ? (
-                <>
-                    <Hero onSearch={() => setView('results')} />
-                    <Solutions />
-                    <Partners />
-                </>
-            ) : view === 'results' ? (
-                <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
-                    <SearchResults />
-                </div>
-            ) : null}
+            <Routes>
+                <Route path="/" element={
+                    <>
+                        <Hero onSearch={() => navigate('/results')} />
+                        <Solutions />
+                        <Partners />
+                    </>
+                } />
+                <Route path="/results" element={
+                    <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                        <SearchResults />
+                    </div>
+                } />
+                <Route path="/login" element={
+                    <Login
+                        onLoginSuccess={handleLoginSuccess}
+                        onBackToHome={() => navigate('/')}
+                        onRegisterClick={() => navigate('/register')}
+                    />
+                } />
+                <Route path="/register" element={
+                    <Register
+                        onRegisterSuccess={handleRegisterSuccess}
+                        onBackToHome={() => navigate('/')}
+                        onLoginClick={() => navigate('/login')}
+                    />
+                } />
+            </Routes>
 
-            <Footer />
+            {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}
         </div>
     );
 };
