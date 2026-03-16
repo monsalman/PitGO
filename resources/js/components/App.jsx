@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import Login from './Login';
+import Register from './Register';
+import axios from 'axios';
 
 // Custom Markers Styling
 const createUserIcon = () => {
@@ -30,7 +33,7 @@ const createWorkshopIcon = () => {
     });
 };
 
-const Navbar = ({ onLogoClick }) => (
+const Navbar = ({ onLogoClick, onLoginClick, onRegisterClick, user, onLogout }) => (
     <nav className="sticky top-0 z-[100] flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
         <div className="flex items-center space-x-2 cursor-pointer" onClick={onLogoClick}>
             <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200 transition-transform hover:scale-105 active:scale-95">
@@ -59,10 +62,38 @@ const Navbar = ({ onLogoClick }) => (
             </a>
         </div>
         <div className="flex items-center space-x-6">
-            <button className="text-sm font-bold text-gray-700 hover:text-orange-600 transition-colors">Masuk</button>
-            <button className="px-6 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl hover:bg-orange-600 hover:shadow-orange-200 transition-all active:scale-95">
-                Daftar Sekarang
-            </button>
+            {user ? (
+                <div className="flex items-center space-x-4">
+                    <div className="flex flex-col items-end">
+                        <span className="text-sm font-black text-gray-400">
+                            Hai, <span className="text-gray-900">{user.name}</span>
+                        </span>
+                    </div>
+                    <button
+                        onClick={onLogout}
+                        className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </button>
+                </div>
+            ) : (
+                <>
+                    <button
+                        onClick={onLoginClick}
+                        className="text-sm font-bold text-gray-700 hover:text-orange-600 transition-colors"
+                    >
+                        Masuk
+                    </button>
+                    <button 
+                        onClick={onRegisterClick}
+                        className="px-6 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl hover:bg-orange-600 hover:shadow-orange-200 transition-all active:scale-95"
+                    >
+                        Daftar Sekarang
+                    </button>
+                </>
+            )}
         </div>
     </nav>
 );
@@ -100,7 +131,7 @@ const Hero = ({ onSearch }) => (
                             className="bg-transparent border-none outline-none text-gray-800 font-bold w-full placeholder:text-gray-400"
                         />
                     </div>
-                    <button 
+                    <button
                         onClick={onSearch}
                         className="w-full sm:w-auto px-10 py-4 bg-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-orange-300 hover:bg-orange-500 hover:shadow-orange-400 transition-all active:scale-95 leading-none"
                     >
@@ -150,7 +181,7 @@ const MapCenterer = ({ coords }) => {
 };
 
 const SearchResults = () => {
-    const [userLocation, setUserLocation] = useState(null); 
+    const [userLocation, setUserLocation] = useState(null);
     const [locationLabel, setLocationLabel] = useState("Mencari lokasi Anda...");
 
     const workshops = [
@@ -163,7 +194,7 @@ const SearchResults = () => {
             services: ["Engine Repair", "Brakes", "Oil Change"],
             image: "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=300",
             sosReady: true,
-            coords: [-6.2088, 106.8456] 
+            coords: [-6.2088, 106.8456]
         },
         {
             id: 2,
@@ -199,7 +230,7 @@ const SearchResults = () => {
                 },
                 (error) => {
                     console.error("Error getting location:", error);
-                    setUserLocation([-6.2088, 106.8456]); 
+                    setUserLocation([-6.2088, 106.8456]);
                     setLocationLabel("Lokasi tidak dapat diakses (Default: Jakarta)");
                 }
             );
@@ -208,7 +239,8 @@ const SearchResults = () => {
 
     return (
         <div className="relative min-h-screen pb-20 overflow-hidden bg-gray-50 isolate">
-            <style dangerouslySetInnerHTML={{ __html: `
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 .leaflet-popup-content-wrapper {
                     background: transparent !important;
                     box-shadow: none !important;
@@ -359,7 +391,7 @@ const SearchResults = () => {
                             <h2 className="text-3xl font-[900] text-gray-900 tracking-tight">Tersedia Sekarang</h2>
                             <button className="text-orange-600 font-black text-sm hover:underline flex items-center space-x-2 group">
                                 <span>Lihat Semua</span>
-                                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"/></svg>
+                                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
                             </button>
                         </div>
 
@@ -424,7 +456,7 @@ const Solutions = () => (
     <div className="relative py-24 bg-gray-50/30 overflow-hidden isolate">
         <div className="absolute top-24 left-1/4 w-96 h-96 bg-blue-200/20 rounded-full blur-[100px] -z-10 animate-pulse"></div>
         <div className="absolute bottom-24 right-1/4 w-96 h-96 bg-orange-200/20 rounded-full blur-[100px] -z-10 animate-pulse transition-all duration-1000"></div>
-        
+
         <div className="max-w-7xl mx-auto px-8">
             <div className="text-center mb-20 animate-in fade-in slide-in-from-bottom-6 duration-1000">
                 <h2 className="text-5xl lg:text-6xl font-black text-gray-900 mb-6 tracking-tight">Solusi Lengkap <span className="text-orange-500 italic">di Jalan</span></h2>
@@ -432,7 +464,7 @@ const Solutions = () => (
                     Semua yang Anda butuhkan untuk menjaga kendaraan tetap prima, kapan saja dan di mana saja.
                 </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div className="group p-12 bg-white/40 backdrop-blur-2xl rounded-[3rem] border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] transition-all duration-700 hover:bg-white/70 hover:shadow-2xl hover:shadow-blue-200/30 hover:-translate-y-4">
                     <div className="w-20 h-20 bg-blue-500/10 backdrop-blur-md rounded-3xl flex items-center justify-center mb-10 transition-transform group-hover:scale-110 duration-700 border border-blue-500/20">
@@ -505,7 +537,7 @@ const Partners = () => (
                     Pelajari Detail
                 </button>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-24">
                 {[
                     { val: '200+', label: 'Bengkel Aktif' },
@@ -616,7 +648,8 @@ const Footer = () => (
             <div className="absolute -top-12 right-0 bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-xl">Butuh Bantuan?</div>
         </button>
 
-        <style dangerouslySetInnerHTML={{ __html: `
+        <style dangerouslySetInnerHTML={{
+            __html: `
             .italic-glow { filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.4)); }
             .section-glow::after {
                 content: '';
@@ -630,24 +663,82 @@ const Footer = () => (
 );
 
 const App = () => {
-    const [view, setView] = useState('home'); 
+    const [view, setView] = useState('home');
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const response = await axios.get('/user');
+                setUser(response.data);
+            } catch (err) {
+                console.log('Not logged in');
+            }
+        };
+        checkAuth();
+    }, []);
+
+    const handleLoginSuccess = (userData) => {
+        setUser(userData);
+        setView('home');
+    };
+
+    const handleRegisterSuccess = (userData) => {
+        setUser(userData);
+        setView('home');
+    };
+
+    const handleLogout = async () => {
+        try {
+            await axios.post('/logout');
+            setUser(null);
+            setView('home');
+        } catch (err) {
+            console.error('Logout failed', err);
+        }
+    };
+
+    if (view === 'login') {
+        return (
+            <Login
+                onLoginSuccess={handleLoginSuccess}
+                onBackToHome={() => setView('home')}
+            />
+        );
+    }
+
+    if (view === 'register') {
+        return (
+            <Register 
+                onRegisterSuccess={handleRegisterSuccess} 
+                onBackToHome={() => setView('home')}
+                onLoginClick={() => setView('login')}
+            />
+        );
+    }
 
     return (
         <div className="min-h-screen font-sans selection:bg-orange-100 selection:text-orange-900 scroll-smooth">
-            <Navbar onLogoClick={() => setView('home')} />
-            
+            <Navbar
+                onLogoClick={() => setView('home')}
+                onLoginClick={() => setView('login')}
+                onRegisterClick={() => setView('register')}
+                user={user}
+                onLogout={handleLogout}
+            />
+
             {view === 'home' ? (
                 <>
                     <Hero onSearch={() => setView('results')} />
                     <Solutions />
                     <Partners />
                 </>
-            ) : (
+            ) : view === 'results' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
                     <SearchResults />
                 </div>
-            )}
-            
+            ) : null}
+
             <Footer />
         </div>
     );
