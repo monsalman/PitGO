@@ -4,6 +4,8 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import L from 'leaflet';
 import Login from './Login';
 import Register from './Register';
+import Navbar from './Navbar';
+import Management from './Management';
 import axios from 'axios';
 
 // Custom Markers Styling
@@ -34,76 +36,10 @@ const createWorkshopIcon = () => {
     });
 };
 
-const Navbar = ({ user, onLogout }) => {
-    const navigate = useNavigate();
-    return (
-        <nav className="sticky top-0 z-[100] flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
-                <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200 transition-transform hover:scale-105 active:scale-95">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" />
-                    </svg>
-                </div>
-                <span className="text-2xl font-black text-gray-900 tracking-tight">Pit<span className="text-orange-500 italic">GO</span></span>
-            </div>
-            <div className="hidden md:flex items-center space-x-10">
-                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
-                    Beranda
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
-                </a>
-                <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
-                    Layanan
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
-                </a>
-                <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
-                    Cara Kerja
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
-                </a>
-                <a href="#" className="text-sm font-bold text-gray-600 hover:text-orange-600 transition-colors relative group">
-                    Darurat
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
-                </a>
-            </div>
-            <div className="flex items-center space-x-6">
-                {user ? (
-                    <div className="flex items-center space-x-4">
-                        <div className="flex flex-col items-end">
-                            <span className="text-sm font-black text-gray-400">
-                                Hai, <span className="text-gray-900">{user.name}</span>
-                            </span>
-                        </div>
-                        <button
-                            onClick={onLogout}
-                            className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                        </button>
-                    </div>
-                ) : (
-                    <>
-                        <button
-                            onClick={() => navigate('/login')}
-                            className="text-sm font-bold text-gray-700 hover:text-orange-600 transition-colors"
-                        >
-                            Masuk
-                        </button>
-                        <button
-                            onClick={() => navigate('/register')}
-                            className="px-6 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl hover:bg-orange-600 hover:shadow-orange-200 transition-all active:scale-95"
-                        >
-                            Daftar Sekarang
-                        </button>
-                    </>
-                )}
-            </div>
-        </nav>
-    );
-};
+
 
 const Hero = ({ onSearch }) => (
-    <div className="relative min-h-[calc(100vh-88px)] bg-gray-50 overflow-hidden isolate">
+    <div className="relative min-h-screen bg-gray-50 overflow-hidden isolate pt-12">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-orange-50/50 to-transparent pointer-events-none -z-10"></div>
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-orange-200/30 rounded-full blur-[120px] -z-10 animate-pulse"></div>
         <div className="absolute top-1/2 right-0 w-80 h-80 bg-blue-200/20 rounded-full blur-[100px] -z-10 transition-all duration-1000"></div>
@@ -242,7 +178,7 @@ const SearchResults = () => {
     }, []);
 
     return (
-        <div className="relative min-h-screen pb-20 overflow-hidden bg-gray-50 isolate">
+        <div className="relative min-h-screen pb-20 overflow-hidden bg-gray-50 isolate pt-24">
             <style dangerouslySetInnerHTML={{
                 __html: `
                 .leaflet-popup-content-wrapper {
@@ -755,6 +691,7 @@ const App = () => {
                         onLoginClick={() => navigate('/login')}
                     />
                 } />
+                <Route path="/management" element={<Management />} />
             </Routes>
 
             {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}

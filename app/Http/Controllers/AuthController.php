@@ -72,4 +72,61 @@ class AuthController extends Controller
             'user' => $request->user()
         ]);
     }
+
+    public function index()
+    {
+        return response()->json(User::all());
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => 'required|string',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'role' => $request->role,
+        ]);
+
+        return response()->json($user, 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|string',
+        ]);
+
+        $user->update($request->only(['name', 'email', 'phone', 'role']));
+
+        if ($request->filled('password')) {
+            $user->update(['password' => Hash::make($request->password)]);
+        }
+
+        return response()->json($user);
+    }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        
+        // Prevent admin from deleting themselves
+        if ($user->id === Auth::id()) {
+            return response()->json(['message' => 'Cannot delete your own account'], 403);
+        }
+
+        $user->delete();
+        return response()->json(['message' => 'User deleted successfully']);
+    }
 }
