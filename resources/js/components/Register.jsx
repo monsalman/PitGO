@@ -7,15 +7,17 @@ const Register = ({ onRegisterSuccess, onBackToHome, onLoginClick }) => {
         email: '',
         phone: '',
         password: '',
-        password_confirmation: ''
+        password_confirmation: '',
+        remember: false
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: type === 'checkbox' ? checked : value
         });
     };
 
@@ -48,12 +50,12 @@ const Register = ({ onRegisterSuccess, onBackToHome, onLoginClick }) => {
             
             <div className="w-full max-w-5xl relative z-10 animate-fade-slide-up">
                 {/* Advanced Glassmorphism Card */}
-                <div className="bg-white/10 backdrop-blur-[40px] rounded-[3rem] border border-white/40 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] overflow-hidden flex flex-col lg:flex-row-reverse ring-1 ring-white/20">
+                <div className="bg-white/20 backdrop-blur-[50px] rounded-[2rem] border border-white/50 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col lg:flex-row-reverse ring-1 ring-white/30">
                     
                     {/* Hero Info - Right Section */}
                     <div className="flex-1 p-8 lg:p-16 flex flex-col justify-center border-b lg:border-b-0 lg:border-l border-white/20 bg-white/5 animate-fade-in delay-300">
                         <div className="flex items-center space-x-3 mb-8 cursor-pointer group" onClick={onBackToHome}>
-                            <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/20 group-hover:rotate-6 transition-transform">
+                            <div className="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center shadow-xl shadow-orange-500/20 group-hover:rotate-6 transition-transform">
                                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" />
                                 </svg>
@@ -74,8 +76,8 @@ const Register = ({ onRegisterSuccess, onBackToHome, onLoginClick }) => {
                                 { color: 'blue', label: 'Akses 500+ Bengkel' },
                                 { color: 'orange', label: 'Eksklusif Promo Partner' }
                             ].map((item, i) => (
-                                <div key={i} className="flex items-center space-x-4 bg-white/10 backdrop-blur-xl p-4 rounded-2xl border border-white/30 shadow-sm transition-all hover:translate-x-2 hover:bg-white/20">
-                                    <div className={`w-8 h-8 flex items-center justify-center rounded-lg bg-${item.color}-500/20`}>
+                                <div key={i} className="flex items-center space-x-4 bg-white/10 backdrop-blur-xl p-4 rounded-xl border border-white/30 shadow-sm transition-all hover:translate-x-2 hover:bg-white/20">
+                                    <div className={`w-8 h-8 flex items-center justify-center rounded-md bg-${item.color}-500/20`}>
                                         <svg className={`w-5 h-5 text-${item.color}-600`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.5" d="M5 13l4 4L19 7" />
                                         </svg>
@@ -94,7 +96,7 @@ const Register = ({ onRegisterSuccess, onBackToHome, onLoginClick }) => {
                         </div>
 
                         {error && (
-                            <div className="mb-4 p-4 bg-red-500/10 backdrop-blur-md text-red-600 rounded-2xl border border-red-500/20 font-black text-sm animate-shake">
+                            <div className="mb-4 p-4 bg-red-500/10 backdrop-blur-md text-red-600 rounded-xl border border-red-500/20 font-black text-sm animate-shake">
                                 {error}
                             </div>
                         )}
@@ -161,17 +163,30 @@ const Register = ({ onRegisterSuccess, onBackToHome, onLoginClick }) => {
                                         value={formData.password_confirmation}
                                         onChange={handleChange}
                                         placeholder="••••••••"
-                                        className="w-full px-5 py-3 bg-white/40 backdrop-blur-md border border-white/40 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all font-bold text-gray-900 placeholder:text-gray-400 shadow-inner"
+                                        className="w-full px-5 py-3 bg-white/20 backdrop-blur-2xl border border-white/50 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all font-black text-gray-900 placeholder:text-gray-400/60 shadow-[inset_0_1px_2px_rgba(255,255,255,0.3)]"
                                         required
                                     />
                                 </div>
+                            </div>
+
+                            <div className="flex items-center justify-start px-1 pt-2">
+                                <button 
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, remember: !formData.remember })}
+                                    className="flex items-center space-x-3 cursor-pointer group outline-none"
+                                >
+                                    <div className={`w-10 h-5 rounded-full relative transition-all duration-300 ${formData.remember ? 'bg-orange-600 shadow-[0_0_15px_rgba(249,115,22,0.4)]' : 'bg-white/20 border border-white/40'}`}>
+                                        <div className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white transition-all duration-300 shadow-sm ${formData.remember ? 'left-5.5' : 'left-1'}`}></div>
+                                    </div>
+                                    <span className={`text-[11px] font-black uppercase tracking-wider transition-colors ${formData.remember ? 'text-gray-900' : 'text-gray-400'}`}>Ingat Saya</span>
+                                </button>
                             </div>
 
                             <div className="pt-4">
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full py-4 bg-orange-600 text-white font-black text-lg rounded-2xl shadow-2xl shadow-orange-600/30 hover:bg-orange-500 hover:shadow-orange-600/50 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center space-x-3 group"
+                                    className="w-full py-4 bg-orange-600 text-white font-black text-lg rounded-xl shadow-2xl shadow-orange-600/30 hover:bg-orange-500 hover:shadow-orange-600/50 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center space-x-3 group"
                                 >
                                     {loading ? (
                                         <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>

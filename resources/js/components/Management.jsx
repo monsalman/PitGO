@@ -21,6 +21,18 @@ const Management = () => {
         }
     };
 
+    // Lock body scroll when any modal is open
+    useEffect(() => {
+        if (isModalOpen || isDeleteModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isModalOpen, isDeleteModalOpen]);
+
     useEffect(() => {
         fetchUsers();
     }, []);
@@ -68,7 +80,7 @@ const Management = () => {
     };
 
     return (
-        <div className="relative min-h-screen bg-[#f8fafc] overflow-hidden isolate pt-44 pb-20">
+        <div className="relative min-h-screen bg-[#f8fafc] overflow-x-hidden pt-44 pb-20">
             {/* Ultra-Vibrant Background Decorative Blobs */}
             <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-orange-400/20 rounded-full blur-[120px] -z-10 animate-[pulse_8s_infinite]"></div>
             <div className="absolute top-[20%] right-[-5%] w-[400px] h-[400px] bg-blue-400/15 rounded-full blur-[100px] -z-10 animate-[bounce_10s_infinite]"></div>
@@ -85,7 +97,7 @@ const Management = () => {
                     </div>
                     <button
                         onClick={() => handleOpenModal()}
-                        className="group relative px-10 py-5 bg-gray-900 text-white font-black rounded-[2rem] overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
+                        className="group relative px-10 py-5 bg-gray-900 text-white font-black rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div className="relative flex items-center space-x-4">
@@ -101,8 +113,8 @@ const Management = () => {
 
                 {/* Enhanced Glassmorphism Card */}
                 <div className="relative group/card">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500/20 to-blue-500/20 rounded-[4.5rem] blur opacity-30 group-hover/card:opacity-50 transition duration-1000"></div>
-                    <div className="relative bg-white/20 backdrop-blur-[45px] rounded-[4rem] border border-white/60 shadow-[0_40px_100px_rgba(0,0,0,0.03)] overflow-hidden">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500/30 to-blue-500/30 rounded-[2.5rem] blur opacity-40 group-hover/card:opacity-60 transition duration-1000"></div>
+                    <div className="relative bg-white/20 backdrop-blur-[55px] rounded-[2rem] border border-white/60 shadow-[0_40px_100px_rgba(0,0,0,0.05)] overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
@@ -129,8 +141,8 @@ const Management = () => {
                                                 <td className="px-12 py-10">
                                                     <div className="flex items-center space-x-7">
                                                         <div className="relative">
-                                                            <div className="absolute -inset-1 bg-gradient-to-br from-orange-500 to-orange-400 rounded-3xl blur opacity-0 group-hover/row:opacity-20 transition duration-500"></div>
-                                                            <div className="relative w-16 h-16 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[1.8rem] flex items-center justify-center font-black text-gray-300 group-hover/row:text-orange-600 transition-all duration-500 uppercase text-2xl border border-white">
+                                                            <div className="absolute -inset-1 bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl blur opacity-0 group-hover/row:opacity-20 transition duration-500"></div>
+                                                            <div className="relative w-16 h-16 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl flex items-center justify-center font-black text-gray-300 group-hover/row:text-orange-600 transition-all duration-500 uppercase text-2xl border border-white">
                                                                 {u.name.charAt(0)}
                                                             </div>
                                                         </div>
@@ -200,9 +212,9 @@ const Management = () => {
             {isDeleteModalOpen && (
                 <div
                     onClick={(e) => e.target === e.currentTarget && setIsDeleteModalOpen(false)}
-                    className="fixed inset-0 z-[80] flex items-start justify-center p-6 pt-32 backdrop-blur-[20px] bg-black/30 animate-in fade-in duration-500 overflow-y-auto cursor-pointer"
+                    className="fixed inset-0 z-[150] flex items-start justify-center p-6 pt-32 backdrop-blur-[25px] bg-black/50 animate-in fade-in duration-500 overflow-y-auto cursor-pointer"
                 >
-                    <div className="bg-white/80 backdrop-blur-[50px] rounded-[4rem] w-full max-w-lg p-14 shadow-[0_80px_150px_rgba(0,0,0,0.3)] border border-white relative scale-in-center overflow-hidden cursor-default">
+                    <div className="bg-white/30 backdrop-blur-[60px] rounded-[2.5rem] w-full max-w-lg p-14 shadow-[0_80px_150px_rgba(0,0,0,0.3)] border border-white/60 relative scale-in-center overflow-hidden cursor-default">
                         <div className="absolute top-0 right-0 w-40 h-40 bg-red-500/5 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none"></div>
 
                         <button
@@ -213,7 +225,7 @@ const Management = () => {
                         </button>
 
                         <div className="relative z-10 text-center">
-                            <div className="w-24 h-24 bg-red-50 text-red-500 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-[0_20px_40px_rgba(239,68,68,0.1)] group-hover:rotate-12 transition-transform border border-red-100">
+                            <div className="w-24 h-24 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-10 shadow-[0_20px_40px_rgba(239,68,68,0.1)] group-hover:rotate-12 transition-transform border border-red-100">
                                 <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 uppercase tracking-tighter leading-tight mb-4">Confirm Deletion</h2>
@@ -222,13 +234,13 @@ const Management = () => {
                             <div className="flex flex-col space-y-4">
                                 <button
                                     onClick={handleDelete}
-                                    className="w-full py-6 bg-red-600 text-white font-black rounded-[2.2rem] shadow-[0_20px_40px_rgba(220,38,38,0.2)] hover:bg-red-700 hover:-translate-y-1 transition-all active:scale-95 text-xs uppercase tracking-[0.3em]"
+                                    className="w-full py-6 bg-red-600 text-white font-black rounded-2xl shadow-[0_20px_40px_rgba(220,38,38,0.2)] hover:bg-red-700 hover:-translate-y-1 transition-all active:scale-95 text-xs uppercase tracking-[0.3em]"
                                 >
                                     Confirm & Destroy
                                 </button>
                                 <button
                                     onClick={() => setIsDeleteModalOpen(false)}
-                                    className="w-full py-6 bg-white/50 text-gray-400 font-black rounded-[2.2rem] border border-white hover:text-gray-900 transition-all text-xs uppercase tracking-[0.3em]"
+                                    className="w-full py-6 bg-white/50 text-gray-400 font-black rounded-2xl border border-white hover:text-gray-900 transition-all text-xs uppercase tracking-[0.3em]"
                                 >
                                     Abort Action
                                 </button>
@@ -242,9 +254,9 @@ const Management = () => {
             {isModalOpen && (
                 <div
                     onClick={(e) => e.target === e.currentTarget && setIsModalOpen(false)}
-                    className="fixed inset-0 z-[80] flex items-start justify-center p-6 pt-32 backdrop-blur-[25px] bg-black/20 animate-in fade-in duration-500 overflow-y-auto cursor-pointer"
+                    className="fixed inset-0 z-[150] flex items-start justify-center p-6 pt-32 backdrop-blur-[30px] bg-black/50 animate-in fade-in duration-500 overflow-y-auto cursor-pointer"
                 >
-                    <div className="bg-white/70 backdrop-blur-[60px] rounded-[4.5rem] w-full max-w-2xl p-16 shadow-[0_100px_200px_rgba(0,0,0,0.2)] border border-white relative overflow-hidden group/modal cursor-default">
+                    <div className="bg-white/30 backdrop-blur-[70px] rounded-[2.5rem] w-full max-w-2xl p-16 shadow-[0_100px_200px_rgba(0,0,0,0.3)] border border-white/60 relative overflow-hidden group/modal cursor-default">
                         <div className="absolute top-0 right-0 w-56 h-56 bg-orange-500/10 rounded-full -mr-28 -mt-28 blur-[90px] group-hover/modal:bg-orange-500/15 transition-all duration-1000 pointer-events-none"></div>
 
                         <button
@@ -270,7 +282,7 @@ const Management = () => {
                                 <input
                                     type="text"
                                     required
-                                    className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-[2.5rem] focus:ring-[15px] focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black text-gray-900 tracking-tighter text-2xl shadow-[0_10px_30px_rgba(0,0,0,0.02)]"
+                                    className="w-full px-10 py-6 bg-white/10 border border-white/40 rounded-2xl focus:ring-[15px] focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black text-gray-900 tracking-tighter text-2xl shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]"
                                     value={formData.name}
                                     placeholder="Nomenclature"
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -282,7 +294,7 @@ const Management = () => {
                                     <input
                                         type="email"
                                         required
-                                        className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-[2.5rem] focus:ring-8 focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black text-gray-700 shadow-sm"
+                                        className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-2xl focus:ring-8 focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black text-gray-700 shadow-sm"
                                         value={formData.email}
                                         placeholder="admin@pitgo.nexus"
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -292,7 +304,7 @@ const Management = () => {
                                     <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] ml-4 opacity-80">Encryption Link (Phone)</label>
                                     <input
                                         type="text"
-                                        className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-[2.5rem] focus:ring-8 focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black text-gray-700 shadow-sm"
+                                        className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-2xl focus:ring-8 focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black text-gray-700 shadow-sm"
                                         value={formData.phone}
                                         placeholder="+62 000 0000"
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -303,7 +315,7 @@ const Management = () => {
                                 <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] ml-4 opacity-80">Authority Level Assignment</label>
                                 <div className="relative group/select">
                                     <select
-                                        className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-[2.5rem] focus:ring-8 focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black uppercase text-[11px] tracking-[0.3em] appearance-none cursor-pointer shadow-sm pr-20"
+                                        className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-2xl focus:ring-8 focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black uppercase text-[11px] tracking-[0.3em] appearance-none cursor-pointer shadow-sm pr-20"
                                         value={formData.role}
                                         onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                     >
@@ -322,7 +334,7 @@ const Management = () => {
                                     <input
                                         type="password"
                                         required={!editingUser}
-                                        className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-[2.5rem] focus:ring-8 focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black text-gray-900 shadow-sm"
+                                        className="w-full px-10 py-6 bg-white/50 border border-white/80 rounded-2xl focus:ring-8 focus:ring-orange-500/5 focus:border-orange-500 outline-none transition-all duration-500 font-black text-gray-900 shadow-sm"
                                         value={formData.password}
                                         placeholder="••••••••"
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -330,7 +342,7 @@ const Management = () => {
                                 </div>
                             )}
 
-                            <button className="group relative w-full py-7 bg-gray-900 text-white font-black rounded-[2.8rem] overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(249,115,22,0.3)] hover:-translate-y-1 active:scale-[0.98] mt-10">
+                            <button className="group relative w-full py-7 bg-gray-900 text-white font-black rounded-[2rem] overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(249,115,22,0.3)] hover:-translate-y-1 active:scale-[0.98] mt-10">
                                 <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <span className="relative z-10 uppercase tracking-[0.4em] text-[10px]">Execute Configuration Save</span>
                             </button>

@@ -25,7 +25,7 @@ const createWorkshopIcon = () => {
     return L.divIcon({
         className: 'custom-div-icon',
         html: `<div class="group relative">
-            <div class="w-10 h-10 bg-orange-500 rounded-2xl border-4 border-white shadow-xl flex items-center justify-center transition-transform hover:scale-110 active:scale-90">
+            <div class="w-10 h-10 bg-orange-500 rounded-xl border-4 border-white shadow-xl flex items-center justify-center transition-transform hover:scale-110 active:scale-90">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" />
                 </svg>
@@ -46,7 +46,7 @@ const Hero = ({ onSearch }) => (
 
         <div className="max-w-7xl mx-auto px-8 py-16 lg:py-24 flex flex-col lg:flex-row items-center">
             <div className="flex-1 z-10 text-center lg:text-left">
-                <div className="inline-flex items-center space-x-2 bg-white/40 backdrop-blur-xl px-4 py-2 rounded-full border border-white/60 shadow-sm mb-8 transition-all hover:bg-white/60">
+                <div className="inline-flex items-center space-x-2 bg-white/40 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/60 shadow-sm mb-8 transition-all hover:bg-white/60">
                     <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                     <span className="text-xs font-bold text-gray-500 tracking-wide uppercase">Dipercaya oleh 50.000+ pemilik kendaraan</span>
                 </div>
@@ -60,7 +60,7 @@ const Hero = ({ onSearch }) => (
                     Cara termudah untuk memesan servis kendaraan atau mendapatkan bantuan darurat di jalan dari profesional bersertifikat di dekat Anda.
                 </p>
 
-                <div className="flex flex-col sm:flex-row items-center bg-white/40 backdrop-blur-2xl p-2 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/60 max-w-2xl group transition-all focus-within:ring-4 focus-within:ring-orange-100 focus-within:bg-white/60">
+                <div className="flex flex-col sm:flex-row items-center bg-white/20 backdrop-blur-3xl p-2 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 max-w-2xl group transition-all focus-within:ring-4 focus-within:ring-orange-100 focus-within:bg-white/30">
                     <div className="flex-1 flex items-center px-4 py-3 space-x-3">
                         <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -73,7 +73,7 @@ const Hero = ({ onSearch }) => (
                     </div>
                     <button
                         onClick={onSearch}
-                        className="w-full sm:w-auto px-10 py-4 bg-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-orange-300 hover:bg-orange-500 hover:shadow-orange-400 transition-all active:scale-95 leading-none"
+                        className="w-full sm:w-auto px-10 py-4 bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-300 hover:bg-orange-500 hover:shadow-orange-400 transition-all active:scale-95 leading-none"
                     >
                         Cari Terdekat
                     </button>
@@ -82,9 +82,9 @@ const Hero = ({ onSearch }) => (
 
             <div className="flex-1 mt-16 lg:mt-0 relative w-full flex justify-center lg:justify-end">
                 <div className="relative group">
-                    <div className="absolute -inset-4 bg-orange-500/20 rounded-[3rem] blur-2xl group-hover:bg-orange-500/30 transition-all duration-500"></div>
+                    <div className="absolute -inset-4 bg-orange-500/20 rounded-[2rem] blur-2xl group-hover:bg-orange-500/30 transition-all duration-500"></div>
 
-                    <div className="relative w-full max-w-[500px] h-[600px] rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white group-hover:rotate-1 transition-all duration-500">
+                    <div className="relative w-full max-w-[500px] h-[600px] rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white group-hover:rotate-1 transition-all duration-500">
                         <img
                             src="/images/hero_mechanic.png"
                             alt="PitGO Mechanic"
@@ -93,8 +93,8 @@ const Hero = ({ onSearch }) => (
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
                     </div>
 
-                    <div className="absolute bottom-10 -left-10 lg:-left-16 flex items-center space-x-4 bg-white/60 backdrop-blur-2xl p-5 rounded-3xl shadow-2xl border border-white group-hover:translate-x-2 transition-transform duration-500">
-                        <div className="w-14 h-14 bg-orange-500/10 backdrop-blur-md rounded-2xl flex items-center justify-center overflow-hidden border border-orange-500/20">
+                    <div className="absolute bottom-10 -left-10 lg:-left-16 flex items-center space-x-4 bg-white/60 backdrop-blur-2xl p-5 rounded-2xl shadow-2xl border border-white group-hover:translate-x-2 transition-transform duration-500">
+                        <div className="w-14 h-14 bg-orange-500/10 backdrop-blur-md rounded-xl flex items-center justify-center overflow-hidden border border-orange-500/20">
                             <svg className="w-7 h-7 text-orange-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -197,17 +197,17 @@ const SearchResults = () => {
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-200/20 rounded-full blur-[120px] -z-10 animate-pulse"></div>
 
             <div className="px-8 py-10">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8 bg-white/40 backdrop-blur-2xl px-10 py-8 rounded-[2.5rem] border border-white shadow-[0_8px_32px_0_rgba(31,38,135,0.05)]">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8 bg-white/20 backdrop-blur-[40px] px-10 py-8 rounded-3xl border border-white/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.08)] shadow-white/20">
                     <div>
                         <h1 className="text-4xl font-black text-gray-900 mb-2 tracking-tight">Bengkel Terdekat</h1>
                         <p className="text-gray-500 font-bold text-lg">Menampilkan 12 bengkel dalam radius 5km dari lokasi Anda</p>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <button className="flex items-center space-x-3 px-8 py-4 bg-white/60 backdrop-blur-md border border-white rounded-2xl font-black text-gray-700 hover:bg-white/80 active:scale-95 transition-all shadow-sm">
+                        <button className="flex items-center space-x-3 px-8 py-4 bg-white/60 backdrop-blur-md border border-white rounded-xl font-black text-gray-700 hover:bg-white/80 active:scale-95 transition-all shadow-sm">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
                             <span>Filter</span>
                         </button>
-                        <button className="flex items-center space-x-3 px-8 py-4 bg-red-600 text-white rounded-2xl font-black shadow-2xl shadow-red-200 hover:bg-red-500 active:scale-95 transition-all">
+                        <button className="flex items-center space-x-3 px-8 py-4 bg-red-600 text-white rounded-xl font-black shadow-2xl shadow-red-200 hover:bg-red-500 active:scale-95 transition-all">
                             <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                             <span>Bantuan SOS</span>
                         </button>
@@ -217,25 +217,25 @@ const SearchResults = () => {
 
             <div className="max-w-7xl mx-auto px-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    <div className="p-10 bg-orange-600 rounded-[3rem] text-white shadow-2xl shadow-orange-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
+                    <div className="p-10 bg-orange-600 rounded-[2rem] text-white shadow-2xl shadow-orange-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-xl"></div>
-                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/30">
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-8 border border-white/30">
                             <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" /></svg>
                         </div>
                         <h3 className="text-3xl font-[900] mb-3">Booking Servis</h3>
                         <p className="text-orange-100 font-bold text-lg">Jadwalkan perawatan rutin</p>
                     </div>
-                    <div className="p-10 bg-red-600 rounded-[3rem] text-white shadow-2xl shadow-red-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
+                    <div className="p-10 bg-red-600 rounded-[2rem] text-white shadow-2xl shadow-red-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
                         <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mb-16 blur-xl"></div>
-                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/30">
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-8 border border-white/30">
                             <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                         </div>
                         <h3 className="text-3xl font-[900] mb-3">Mekanik Darurat</h3>
                         <p className="text-red-100 font-bold text-lg">Bantuan instan di lokasi</p>
                     </div>
-                    <div className="p-10 bg-slate-900 rounded-[3rem] text-white shadow-2xl shadow-slate-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
+                    <div className="p-10 bg-slate-900 rounded-[2rem] text-white shadow-2xl shadow-slate-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl"></div>
-                        <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/10">
+                        <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center mb-8 border border-white/10">
                             <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
                         <h3 className="text-3xl font-[900] mb-3">Riwayat Pesanan</h3>
@@ -244,8 +244,8 @@ const SearchResults = () => {
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-12">
-                    <div className="flex-[1.8] bg-white/30 backdrop-blur-2xl p-6 rounded-[3.5rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] border border-white/60 min-h-[700px] relative overflow-hidden group">
-                        <div className="w-full h-[700px] rounded-[2.5rem] overflow-hidden relative z-0 shadow-inner border border-white/40">
+                    <div className="flex-[1.8] bg-white/30 backdrop-blur-2xl p-6 rounded-[2.5rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] border border-white/60 min-h-[700px] relative overflow-hidden group">
+                        <div className="w-full h-[700px] rounded-3xl overflow-hidden relative z-0 shadow-inner border border-white/40">
                             {userLocation ? (
                                 <MapContainer center={userLocation} zoom={14} scrollWheelZoom={true} className="w-full h-full">
                                     <TileLayer
@@ -262,9 +262,9 @@ const SearchResults = () => {
                                     {workshops.map(shop => (
                                         <Marker key={shop.id} position={shop.coords} icon={createWorkshopIcon()}>
                                             <Popup maxWidth={420} className="custom-popup">
-                                                <div className="bg-white/95 backdrop-blur-2xl p-8 rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-white w-[380px] flex flex-col space-y-8 animate-in zoom-in-95 duration-300">
+                                                <div className="bg-white/95 backdrop-blur-2xl p-8 rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-white w-[380px] flex flex-col space-y-8 animate-in zoom-in-95 duration-300">
                                                     <div className="flex space-x-6">
-                                                        <div className="w-28 h-28 rounded-3xl overflow-hidden shadow-xl flex-shrink-0 border-4 border-white">
+                                                        <div className="w-28 h-28 rounded-2xl overflow-hidden shadow-xl flex-shrink-0 border-4 border-white">
                                                             <img src={shop.image} alt={shop.name} className="w-full h-full object-cover" />
                                                         </div>
                                                         <div className="flex-1">
@@ -288,13 +288,13 @@ const SearchResults = () => {
 
                                                     <div className="flex flex-wrap gap-3">
                                                         {shop.services.map((service, i) => (
-                                                            <span key={i} className="text-[11px] font-black bg-gray-50 text-gray-600 px-4 py-2.5 rounded-2xl border border-gray-100/50">{service}</span>
+                                                            <span key={i} className="text-[11px] font-black bg-gray-50 text-gray-600 px-4 py-2.5 rounded-xl border border-gray-100/50">{service}</span>
                                                         ))}
                                                     </div>
 
                                                     <div className="grid grid-cols-2 gap-4">
-                                                        <button className="py-4 bg-white border border-gray-100 text-gray-900 text-sm font-black rounded-2xl hover:bg-gray-50 active:scale-95 transition-all shadow-sm">Profil</button>
-                                                        <button className="py-4 bg-orange-600 text-white text-sm font-black rounded-2xl shadow-xl shadow-orange-100 hover:bg-orange-500 active:scale-95 transition-all">Booking</button>
+                                                        <button className="py-4 bg-white border border-gray-100 text-gray-900 text-sm font-black rounded-xl hover:bg-gray-50 active:scale-95 transition-all shadow-sm">Profil</button>
+                                                        <button className="py-4 bg-orange-600 text-white text-sm font-black rounded-xl shadow-xl shadow-orange-100 hover:bg-orange-500 active:scale-95 transition-all">Booking</button>
                                                     </div>
                                                 </div>
                                             </Popup>
@@ -312,9 +312,9 @@ const SearchResults = () => {
                             )}
                         </div>
 
-                        <div className="absolute bottom-12 left-10 right-10 bg-white/60 backdrop-blur-2xl p-6 rounded-[2rem] shadow-2xl border border-white/80 flex items-center justify-between z-[500] transition-transform group-hover:translate-y-[-5px]">
+                        <div className="absolute bottom-12 left-10 right-10 bg-white/60 backdrop-blur-2xl p-6 rounded-2xl shadow-2xl border border-white/80 flex items-center justify-between z-[500] transition-transform group-hover:translate-y-[-5px]">
                             <div className="flex items-center space-x-5">
-                                <div className="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-200">
+                                <div className="w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
                                     <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
                                 </div>
                                 <div className="flex flex-col">
@@ -336,9 +336,9 @@ const SearchResults = () => {
                         </div>
 
                         {workshops.map((shop) => (
-                            <div key={shop.id} className="bg-white/40 backdrop-blur-2xl p-8 rounded-[3rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] border border-white/60 flex flex-col space-y-8 hover:bg-white/60 hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group">
+                            <div key={shop.id} className="bg-white/20 backdrop-blur-[45px] p-8 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] border border-white/50 flex flex-col space-y-8 hover:bg-white/30 hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group">
                                 <div className="flex space-x-8">
-                                    <div className="w-32 h-32 rounded-[2rem] overflow-hidden shadow-xl flex-shrink-0 border-4 border-white/80 transition-transform group-hover:scale-105">
+                                    <div className="w-32 h-32 rounded-2xl overflow-hidden shadow-xl flex-shrink-0 border-4 border-white/80 transition-transform group-hover:scale-105">
                                         <img src={shop.image} alt={shop.name} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-1">
@@ -367,20 +367,20 @@ const SearchResults = () => {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-6 pt-4">
-                                    <button className="py-4 bg-white/70 text-gray-900 text-sm font-black rounded-2xl hover:bg-white active:scale-95 transition-all shadow-sm">Profil</button>
-                                    <button className="py-4 bg-orange-600 text-white text-sm font-black rounded-2xl shadow-xl shadow-orange-100 hover:bg-orange-500 active:scale-95 transition-all">Booking</button>
+                                    <button className="py-4 bg-white/70 text-gray-900 text-sm font-black rounded-xl hover:bg-white active:scale-95 transition-all shadow-sm">Profil</button>
+                                    <button className="py-4 bg-orange-600 text-white text-sm font-black rounded-xl shadow-xl shadow-orange-100 hover:bg-orange-500 active:scale-95 transition-all">Booking</button>
                                 </div>
                             </div>
                         ))}
 
-                        <div className="p-10 rounded-[3rem] bg-gray-900/95 backdrop-blur-2xl text-center relative overflow-hidden isolate shadow-2xl">
+                        <div className="p-10 rounded-[2rem] bg-gray-900/95 backdrop-blur-2xl text-center relative overflow-hidden isolate shadow-2xl">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-                            <div className="w-20 h-20 bg-white/5 backdrop-blur-md rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
+                            <div className="w-20 h-20 bg-white/5 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-8 border border-white/10">
                                 <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                             </div>
                             <h4 className="text-2xl font-black text-white mb-3">Tidak Menemukan Bengkel?</h4>
                             <p className="text-gray-500 font-bold mb-8 leading-relaxed">Coba perluas radius pencarian Anda untuk melihat lebih banyak pilihan.</p>
-                            <button className="w-full py-4 bg-orange-600 text-white font-black rounded-2xl shadow-xl shadow-orange-600/30 hover:bg-orange-500 hover:-translate-y-1 transition-all flex items-center justify-center space-x-3">
+                            <button className="w-full py-4 bg-orange-600 text-white font-black rounded-xl shadow-xl shadow-orange-600/30 hover:bg-orange-500 hover:-translate-y-1 transition-all flex items-center justify-center space-x-3">
                                 <span>Perluas Radius</span>
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                             </button>
@@ -406,8 +406,8 @@ const Solutions = () => (
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div className="group p-12 bg-white/40 backdrop-blur-2xl rounded-[3rem] border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] transition-all duration-700 hover:bg-white/70 hover:shadow-2xl hover:shadow-blue-200/30 hover:-translate-y-4">
-                    <div className="w-20 h-20 bg-blue-500/10 backdrop-blur-md rounded-3xl flex items-center justify-center mb-10 transition-transform group-hover:scale-110 duration-700 border border-blue-500/20">
+                <div className="group p-12 bg-white/20 backdrop-blur-[45px] rounded-[2rem] border border-white/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] transition-all duration-700 hover:bg-white/30 hover:shadow-2xl hover:shadow-blue-200/30 hover:-translate-y-4">
+                    <div className="w-20 h-20 bg-blue-500/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-10 transition-transform group-hover:scale-110 duration-700 border border-blue-500/20">
                         <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" />
                         </svg>
@@ -418,8 +418,8 @@ const Solutions = () => (
                     </p>
                 </div>
 
-                <div className="group p-12 bg-white/40 backdrop-blur-2xl rounded-[3rem] border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] transition-all duration-700 hover:bg-white/70 hover:shadow-2xl hover:shadow-red-200/30 hover:-translate-y-4">
-                    <div className="w-20 h-20 bg-red-500/10 backdrop-blur-md rounded-3xl flex items-center justify-center mb-10 transition-transform group-hover:scale-110 duration-700 border border-red-500/20">
+                <div className="group p-12 bg-white/20 backdrop-blur-[45px] rounded-[2rem] border border-white/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] transition-all duration-700 hover:bg-white/30 hover:shadow-2xl hover:shadow-red-200/30 hover:-translate-y-4">
+                    <div className="w-20 h-20 bg-red-500/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-10 transition-transform group-hover:scale-110 duration-700 border border-red-500/20">
                         <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
@@ -430,8 +430,8 @@ const Solutions = () => (
                     </p>
                 </div>
 
-                <div className="group p-12 bg-white/40 backdrop-blur-2xl rounded-[3rem] border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] transition-all duration-700 hover:bg-white/70 hover:shadow-2xl hover:shadow-orange-200/30 hover:-translate-y-4">
-                    <div className="w-20 h-20 bg-orange-500/10 backdrop-blur-md rounded-3xl flex items-center justify-center mb-10 transition-transform group-hover:scale-110 duration-700 border border-orange-500/20">
+                <div className="group p-12 bg-white/40 backdrop-blur-2xl rounded-[2rem] border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] transition-all duration-700 hover:bg-white/70 hover:shadow-2xl hover:shadow-orange-200/30 hover:-translate-y-4">
+                    <div className="w-20 h-20 bg-orange-500/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-10 transition-transform group-hover:scale-110 duration-700 border border-orange-500/20">
                         <svg className="w-10 h-10 text-orange-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -467,13 +467,13 @@ const Partners = () => (
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-                <button className="w-full sm:w-auto px-12 py-6 bg-orange-600 text-white font-[950] text-lg rounded-[2.5rem] shadow-2xl shadow-orange-600/40 hover:bg-orange-500 hover:shadow-orange-500/50 hover:-translate-y-2 transition-all active:scale-95 flex items-center justify-center space-x-4 group">
+                <button className="w-full sm:w-auto px-12 py-6 bg-orange-600 text-white font-[950] text-lg rounded-2xl shadow-2xl shadow-orange-600/40 hover:bg-orange-500 hover:shadow-orange-500/50 hover:-translate-y-2 transition-all active:scale-95 flex items-center justify-center space-x-4 group">
                     <span>Mulai Jadi Partner</span>
                     <svg className="w-6 h-6 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                 </button>
-                <button className="w-full sm:w-auto px-12 py-6 bg-white/5 backdrop-blur-2xl text-white font-[950] text-lg rounded-[2.5rem] border border-white/10 hover:bg-white/15 shadow-xl hover:-translate-y-2 transition-all active:scale-95 border-b-white/20">
+                <button className="w-full sm:w-auto px-12 py-6 bg-white/5 backdrop-blur-2xl text-white font-[950] text-lg rounded-2xl border border-white/10 hover:bg-white/15 shadow-xl hover:-translate-y-2 transition-all active:scale-95 border-b-white/20">
                     Pelajari Detail
                 </button>
             </div>
@@ -485,7 +485,7 @@ const Partners = () => (
                     { val: '4.8', label: 'Rating Rata-rata' },
                     { val: '30%', label: 'Kenaikan Profit' }
                 ].map((stat, i) => (
-                    <div key={i} className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 hover:border-orange-500/50 transition-all duration-500 shadow-2xl">
+                    <div key={i} className="bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 hover:border-orange-500/50 transition-all duration-500 shadow-2xl">
                         <div className="text-3xl font-black text-white mb-1">{stat.val}</div>
                         <div className="text-sm font-bold text-gray-500 uppercase tracking-widest">{stat.label}</div>
                     </div>
@@ -504,7 +504,7 @@ const Footer = () => (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-20 mb-24">
                 <div className="col-span-1 md:col-span-1">
                     <div className="flex items-center space-x-3 mb-10 group cursor-pointer">
-                        <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-600/20 group-hover:rotate-12 transition-transform duration-500">
+                        <div className="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center shadow-2xl shadow-orange-600/20 group-hover:rotate-12 transition-transform duration-500">
                             <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" />
                             </svg>
@@ -516,7 +516,7 @@ const Footer = () => (
                     </p>
                     <div className="flex space-x-5">
                         {['facebook-f', 'instagram', 'twitter', 'linkedin-in'].map(soc => (
-                            <a key={soc} href="#" className="w-12 h-12 bg-white/5 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/10 text-gray-400 hover:text-white hover:bg-orange-600 hover:border-orange-500 hover:-translate-y-2 transition-all duration-500 shadow-xl">
+                            <a key={soc} href="#" className="w-12 h-12 bg-white/5 backdrop-blur-xl rounded-xl flex items-center justify-center border border-white/10 text-gray-400 hover:text-white hover:bg-orange-600 hover:border-orange-500 hover:-translate-y-2 transition-all duration-500 shadow-xl">
                                 <i className={`fab fa-${soc} text-lg`}></i>
                             </a>
                         ))}
@@ -547,7 +547,7 @@ const Footer = () => (
                     </ul>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden group">
+                <div className="bg-white/5 backdrop-blur-2xl p-10 rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden group">
                     <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-600/10 rounded-full blur-3xl"></div>
                     <h4 className="text-white font-[950] text-xl mb-4 tracking-tight">Stay Updated</h4>
                     <p className="text-gray-500 font-bold mb-8">Berlangganan tips perawatan gratis.</p>
@@ -556,10 +556,10 @@ const Footer = () => (
                             <input
                                 type="email"
                                 placeholder="Email Anda"
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 transition-all font-bold text-lg shadow-inner"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl py-5 px-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 transition-all font-bold text-lg shadow-inner"
                             />
                         </div>
-                        <button className="w-full py-5 bg-orange-600 text-white font-black text-lg rounded-2xl hover:bg-orange-500 hover:shadow-2xl hover:shadow-orange-600/20 active:scale-95 transition-all shadow-xl">
+                        <button className="w-full py-5 bg-orange-600 text-white font-black text-lg rounded-xl hover:bg-orange-500 hover:shadow-2xl hover:shadow-orange-600/20 active:scale-95 transition-all shadow-xl">
                             Langganan Sekarang
                         </button>
                     </div>
@@ -583,7 +583,7 @@ const Footer = () => (
             </div>
         </div>
 
-        <button className="fixed bottom-12 right-12 w-16 h-16 bg-white/80 backdrop-blur-3xl text-gray-900 rounded-[1.5rem] flex items-center justify-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] hover:scale-110 hover:-translate-y-2 active:scale-95 transition-all z-[100] border border-white group">
+        <button className="fixed bottom-12 right-12 w-16 h-16 bg-white/80 backdrop-blur-3xl text-gray-900 rounded-2xl flex items-center justify-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] hover:scale-110 hover:-translate-y-2 active:scale-95 transition-all z-[100] border border-white group">
             <span className="text-2xl font-black group-hover:rotate-12 transition-transform inline-block">?</span>
             <div className="absolute -top-12 right-0 bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-xl">Butuh Bantuan?</div>
         </button>
