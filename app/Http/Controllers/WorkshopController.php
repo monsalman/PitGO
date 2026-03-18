@@ -27,6 +27,7 @@ class WorkshopController extends Controller
             'location' => 'nullable|string',
             'photo' => 'nullable', // Can be string or file
             'rating' => 'nullable|numeric|min:0|max:5',
+            'reviews_count' => 'nullable|integer|min:0',
             'is_open' => 'required',
         ]);
 
@@ -41,7 +42,6 @@ class WorkshopController extends Controller
 
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
             try {
-                // Correct method for version 2.x/3.x of the SDK
                 $result = cloudinary()->uploadApi()->upload($request->file('photo')->getRealPath(), [
                     'folder' => 'workshops'
                 ]);
@@ -72,20 +72,14 @@ class WorkshopController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'address' => 'sometimes|required|string',
             'location' => 'nullable|string',
-            'photo' => 'nullable',
             'rating' => 'nullable|numeric|min:0|max:5',
+            'reviews_count' => 'nullable|integer|min:0',
             'is_open' => 'sometimes',
         ]);
 
         if ($request->hasFile('photo')) {
             $request->validate(['photo' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048']);
-        }
-
-        if (empty($validated['location']) && !empty($validated['address'])) {
-            $validated['location'] = $this->geocode($validated['address']);
-        }
-
-        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            
             try {
                 // Delete OLD photo before uploading new one to keep storage clean
                 if (!empty($workshop->photo)) {
@@ -100,6 +94,10 @@ class WorkshopController extends Controller
                 \Illuminate\Support\Facades\Log::error('Cloudinary update failed: ' . $e->getMessage());
                 return response()->json(['message' => 'Update foto ke Cloudinary gagal: ' . $e->getMessage()], 500);
             }
+        }
+
+        if (empty($validated['location']) && !empty($validated['address'])) {
+            $validated['location'] = $this->geocode($validated['address']);
         }
 
         $workshop->update($validated);

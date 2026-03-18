@@ -19,11 +19,13 @@ class Workshop extends Model
         'location',
         'photo',
         'rating',
+        'reviews_count',
         'is_open',
     ];
 
     protected $casts = [
         'rating' => 'float',
+        'reviews_count' => 'integer',
         'is_open' => 'boolean',
     ];
 }

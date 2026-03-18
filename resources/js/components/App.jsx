@@ -25,7 +25,7 @@ const createWorkshopIcon = () => {
     return L.divIcon({
         className: 'custom-div-icon',
         html: `<div class="group relative">
-            <div class="w-10 h-10 bg-orange-500 rounded-xl border-4 border-white shadow-xl flex items-center justify-center transition-transform hover:scale-110 active:scale-90">
+            <div class="w-10 h-10 bg-orange-500 rounded-xl border-4 border-white shadow-xl flex items-center justify-center transition-transform hover:scale-110 active:scale-90 overflow-hidden">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" />
                 </svg>
@@ -36,12 +36,243 @@ const createWorkshopIcon = () => {
     });
 };
 
+const Dashboard = () => {
+    const [userLocation, setUserLocation] = useState(null);
+    const [locationLabel, setLocationLabel] = useState("Mencari lokasi Anda...");
+    const [workshops, setWorkshops] = useState([]);
+    const [loadingWorkshops, setLoadingWorkshops] = useState(true);
 
+    useEffect(() => {
+        const fetchWorkshops = async () => {
+            try {
+                const response = await axios.get('/api/workshops');
+                setWorkshops(response.data);
+            } catch (err) {
+                console.error("Failed to fetch workshops:", err);
+            } finally {
+                setLoadingWorkshops(false);
+            }
+        };
+        fetchWorkshops();
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setUserLocation([latitude, longitude]);
+                    setLocationLabel(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                    setUserLocation([-6.2088, 106.8456]);
+                    setLocationLabel("Default: Jakarta");
+                }
+            );
+        }
+    }, []);
+
+    const parseCoords = (locStr) => {
+        if (!locStr) return null;
+        const pts = locStr.split(',').map(Number);
+        return pts.length === 2 && !isNaN(pts[0]) && !isNaN(pts[1]) ? pts : null;
+    };
+
+    const getDistance = (targetLoc) => {
+        if (!userLocation || !targetLoc) return "?.? KM";
+        const [lat1, lon1] = userLocation;
+        const [lat2, lon2] = targetLoc;
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return `${(R * c).toFixed(1)} KM`;
+    };
+
+    return (
+        <div className="relative min-h-screen pb-20 overflow-hidden bg-gray-50 isolate pt-24">
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                .leaflet-popup-content-wrapper {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    padding: 0 !important;
+                }
+                .leaflet-popup-content {
+                    margin: 0 !important;
+                }
+                .leaflet-popup-tip {
+                    display: none !important;
+                }
+            `}} />
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-200/20 rounded-full blur-[120px] -z-10 animate-pulse transition-all duration-1000"></div>
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-200/20 rounded-full blur-[120px] -z-10 animate-pulse transition-all duration-1000"></div>
+
+            <div className="px-8 py-6">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center bg-white/30 backdrop-blur-2xl px-10 py-6 rounded-3xl border border-white/60 shadow-sm">
+                    <p className="text-gray-500 font-bold text-lg">
+                        Menampilkan {workshops.length} bengkel dalam radius 5km dari lokasi Anda
+                    </p>
+                </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <div className="p-10 bg-orange-600 rounded-[2rem] text-white shadow-2xl shadow-orange-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-xl"></div>
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-8 border border-white/30">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" /></svg>
+                        </div>
+                        <h3 className="text-3xl font-black mb-3">Booking Servis</h3>
+                        <p className="text-orange-100 font-bold text-lg opacity-80 group-hover:opacity-100 transition-opacity">Jadwalkan perawatan rutin</p>
+                    </div>
+                    <div className="p-10 bg-red-600 rounded-[2rem] text-white shadow-2xl shadow-red-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
+                        <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mb-16 blur-xl"></div>
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-8 border border-white/30">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                        </div>
+                        <h3 className="text-3xl font-black mb-3">Mekanik Darurat</h3>
+                        <p className="text-red-100 font-bold text-lg opacity-80 group-hover:opacity-100 transition-opacity">Bantuan instan di lokasi</p>
+                    </div>
+                    <div className="p-10 bg-slate-900 rounded-[2rem] text-white shadow-2xl shadow-slate-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl"></div>
+                        <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center mb-8 border border-white/10">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h3 className="text-3xl font-black mb-3">Riwayat Pesanan</h3>
+                        <p className="text-slate-400 font-bold text-lg opacity-80 group-hover:opacity-100 transition-opacity">Lihat servis sebelumnya</p>
+                    </div>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-8">
+                    <div className="flex-[1.8] bg-white/20 backdrop-blur-2xl p-4 rounded-[2.5rem] shadow-sm border border-white/60 min-h-[600px] relative overflow-hidden group">
+                        <div className="w-full h-[600px] rounded-3xl overflow-hidden relative z-0 shadow-inner border border-white">
+                            {userLocation ? (
+                                <MapContainer center={userLocation} zoom={13} scrollWheelZoom={true} className="w-full h-full">
+                                    <TileLayer
+                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                    <Marker position={userLocation} icon={createUserIcon()}>
+                                        <Popup>
+                                            <div className="bg-white/90 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white">
+                                                <span className="font-black text-gray-900 uppercase tracking-widest text-[10px]">Posisi Anda</span>
+                                            </div>
+                                        </Popup>
+                                    </Marker>
+                                    {workshops.map(shop => {
+                                        const coords = parseCoords(shop.location);
+                                        if (!coords) return null;
+                                        return (
+                                            <Marker key={shop.id} position={coords} icon={createWorkshopIcon()}>
+                                                <Popup maxWidth={420} className="custom-popup">
+                                                    <div className="bg-white/95 backdrop-blur-2xl p-6 rounded-3xl shadow-2xl border border-white w-[320px] flex flex-col space-y-6">
+                                                        <div className="flex space-x-4">
+                                                            <div className="w-20 h-20 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border-2 border-white">
+                                                                <img src={shop.photo || 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=200'} alt={shop.name} className="w-full h-full object-cover" />
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <h4 className="text-xl font-black text-gray-900 leading-tight mb-2">{shop.name}</h4>
+                                                                <div className="flex items-center space-x-3">
+                                                                    <div className="bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-100 flex items-center space-x-1">
+                                                                        <span className="text-orange-500 text-[10px]">★</span>
+                                                                        <span className="text-orange-600 font-black text-xs">{shop.rating || '5.0'}</span>
+                                                                    </div>
+                                                                    <span className="text-[10px] font-bold text-gray-400 opacity-60">({shop.reviews_count || 0})</span>
+                                                                    <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                                                    <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">{getDistance(coords)}</span>
+                                                                    <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                                                    <span className={`text-[10px] font-black uppercase tracking-widest ${shop.is_open ? 'text-green-600' : 'text-red-600'}`}>
+                                                                        {shop.is_open ? 'Open' : 'Closed'}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-3">
+                                                            <button className="py-3 bg-white border border-gray-100 text-gray-900 text-xs font-black rounded-xl hover:bg-gray-50 active:scale-95 transition-all">Profil</button>
+                                                            <button className="py-3 bg-orange-600 text-white text-xs font-black rounded-xl shadow-lg shadow-orange-100 hover:bg-orange-500 active:scale-95 transition-all">Booking</button>
+                                                        </div>
+                                                    </div>
+                                                </Popup>
+                                            </Marker>
+                                        );
+                                    })}
+                                    <MapCenterer coords={userLocation} />
+                                </MapContainer>
+                            ) : (
+                                <div className="w-full h-full bg-white/20 backdrop-blur-md flex items-center justify-center">
+                                    <div className="text-center">
+                                        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                                        <p className="text-gray-500 font-black text-lg tracking-tight">Syncing Location...</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex-1 space-y-6">
+                        <div className="flex justify-between items-center mb-6 px-2">
+                            <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase">Tersedia Sekarang</h2>
+                            <button className="text-orange-600 font-black text-xs hover:underline flex items-center space-x-2 group tracking-widest uppercase">
+                                <span>Lihat Semua</span>
+                                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        </div>
+
+                        <div className="space-y-6 max-h-[1000px] overflow-y-auto pr-2 scrollbar-hide">
+                            {loadingWorkshops ? (
+                                <div className="text-center py-10 opacity-50">
+                                    <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                                    <p className="text-xs font-black uppercase tracking-widest">Scanning Networks...</p>
+                                </div>
+                            ) : workshops.map((shop) => (
+                                <div key={shop.id} className="bg-white/40 backdrop-blur-2xl p-6 rounded-[2rem] shadow-sm border border-white hover:bg-white/60 hover:-translate-y-1 transition-all duration-300 group relative">
+                                    <div className="flex space-x-6">
+                                        <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-sm flex-shrink-0 border-4 border-white transition-transform group-hover:scale-105 relative">
+                                            <img src={shop.photo || 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=200'} alt={shop.name} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="text-xl font-black text-gray-900 leading-tight flex-1 text-left">{shop.name}</h3>
+                                                {shop.is_open && (
+                                                    <div className="bg-red-600 text-white text-[8px] font-black px-3 py-1.5 rounded-full uppercase tracking-tighter shadow-lg shadow-red-100 flex-shrink-0 ml-4">SOS READY</div>
+                                                )}
+                                            </div>
+                                            <div className="flex items-center space-x-3 mb-4">
+                                                <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-100 flex items-center space-x-1">
+                                                    <span>★</span>
+                                                    <span>{shop.rating || '5.0'}</span>
+                                                </span>
+                                                <span className="text-[10px] font-bold text-gray-400 opacity-60">({shop.reviews_count || 0})</span>
+                                                <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                                <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">{getDistance(parseCoords(shop.location))}</span>
+                                                <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                                <span className={`text-[10px] font-black uppercase tracking-widest ${shop.is_open ? 'text-green-600' : 'text-red-600'}`}>
+                                                    {shop.is_open ? 'Open' : 'Closed'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 mt-6">
+                                        <button className="py-3 bg-white/60 text-gray-900 text-[10px] font-black rounded-xl hover:bg-white transition-all shadow-sm uppercase tracking-widest border border-white/50">Profil</button>
+                                        <button className="py-3 bg-orange-600 text-white text-[10px] font-black rounded-xl shadow-lg shadow-orange-100 hover:bg-orange-500 active:scale-95 transition-all uppercase tracking-widest">Booking</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const Hero = ({ onSearch }) => (
     <div className="relative min-h-screen bg-gray-50 overflow-hidden isolate pt-12">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-orange-50/50 to-transparent pointer-events-none -z-10"></div>
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-orange-200/30 rounded-full blur-[120px] -z-10 animate-pulse"></div>
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-orange-200/30 rounded-full blur-[120px] -z-10 animate-pulse transition-all duration-1000"></div>
         <div className="absolute top-1/2 right-0 w-80 h-80 bg-blue-200/20 rounded-full blur-[100px] -z-10 transition-all duration-1000"></div>
 
         <div className="max-w-7xl mx-auto px-8 py-16 lg:py-24 flex flex-col lg:flex-row items-center">
@@ -455,7 +686,7 @@ const Partners = () => (
         <div className="max-w-7xl mx-auto px-8 text-center relative z-10">
             <div className="inline-flex items-center space-x-3 bg-white/10 backdrop-blur-2xl px-6 py-3 rounded-full border border-white/10 mb-10 shadow-xl transition-all hover:bg-white/15">
                 <div className="w-2.5 h-2.5 bg-orange-500 rounded-full animate-ping"></div>
-                <span className="text-sm font-black text-orange-400 tracking-widest uppercase italic">Elite Partner Program</span>
+                <span className="text-sm font-black text-orange-400 tracking-widest uppercase italic">PitGO Partner Program</span>
             </div>
 
             <h2 className="text-5xl lg:text-7xl font-black text-white mb-10 tracking-tight max-w-5xl mx-auto leading-[1.1]">
@@ -666,11 +897,15 @@ const App = () => {
 
             <Routes>
                 <Route path="/" element={
-                    <>
-                        <Hero onSearch={() => navigate('/results')} />
-                        <Solutions />
-                        <Partners />
-                    </>
+                    user ? (
+                        <Dashboard />
+                    ) : (
+                        <>
+                            <Hero onSearch={() => navigate('/results')} />
+                            <Solutions />
+                            <Partners />
+                        </>
+                    )
                 } />
                 <Route path="/results" element={
                     <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">

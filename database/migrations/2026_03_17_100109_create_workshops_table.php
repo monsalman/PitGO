@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->string('photo')->nullable();
             $table->decimal('rating', 2, 1)->default(0.0);
+            $table->integer('reviews_count')->default(0);
             $table->boolean('is_open')->default(true);
             $table->timestamps();
         });
