@@ -14,6 +14,7 @@ Route::delete('/api/users/{id}', [AuthController::class, 'destroy']);
 
 use App\Http\Controllers\WorkshopController;
 Route::get('/api/workshops', [WorkshopController::class, 'index']);
+Route::get('/api/workshops/search', [WorkshopController::class, 'search']);
 Route::post('/api/workshops', [WorkshopController::class, 'store']);
 Route::put('/api/workshops/{workshop}', [WorkshopController::class, 'update']);
 Route::delete('/api/workshops/{workshop}', [WorkshopController::class, 'destroy']);

@@ -21,7 +21,8 @@ class WorkshopSeeder extends Seeder
                 'rating' => 4.8,
                 'reviews_count' => 56,
                 'is_open' => true,
-                'photo' => 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=400'
+                'photo' => 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=400',
+                'category' => 'mobil'
             ],
             [
                 'name' => 'Auto Service Beji',
@@ -30,7 +31,8 @@ class WorkshopSeeder extends Seeder
                 'rating' => 4.5,
                 'reviews_count' => 32,
                 'is_open' => true,
-                'photo' => 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=400'
+                'photo' => 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=400',
+                'category' => 'motor'
             ],
             [
                 'name' => 'Mekanik Depok II',
@@ -39,7 +41,8 @@ class WorkshopSeeder extends Seeder
                 'rating' => 4.2,
                 'reviews_count' => 12,
                 'is_open' => false,
-                'photo' => 'https://images.unsplash.com/photo-1487754180451-c456f719c141?auto=format&fit=crop&q=80&w=400'
+                'photo' => 'https://images.unsplash.com/photo-1487754180451-c456f719c141?auto=format&fit=crop&q=80&w=400',
+                'category' => 'semua'
             ],
             [
                 'name' => 'Cimanggis Auto Care',
@@ -48,7 +51,8 @@ class WorkshopSeeder extends Seeder
                 'rating' => 4.9,
                 'reviews_count' => 89,
                 'is_open' => true,
-                'photo' => 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=400'
+                'photo' => 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=400',
+                'category' => 'mobil'
             ],
             [
                 'name' => 'PitGO Partner Sawangan',
@@ -57,7 +61,8 @@ class WorkshopSeeder extends Seeder
                 'rating' => 4.7,
                 'reviews_count' => 44,
                 'is_open' => true,
-                'photo' => 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=400'
+                'photo' => 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=400',
+                'category' => 'semua'
             ],
         ];
 
@@ -70,7 +75,8 @@ class WorkshopSeeder extends Seeder
                     'rating' => $ws['rating'],
                     'reviews_count' => $ws['reviews_count'],
                     'is_open' => $ws['is_open'],
-                    'photo' => $ws['photo']
+                    'photo' => $ws['photo'],
+                    'category' => $ws['category']
                 ]
             );
         }

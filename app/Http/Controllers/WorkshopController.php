@@ -147,6 +147,63 @@ class WorkshopController extends Controller
     }
 
     /**
+     * Search for workshops near a given latitude and longitude.
+     */
+    public function search(Request $request)
+    {
+        $lat = $request->query('lat');
+        $lon = $request->query('lon');
+        $radius = $request->query('radius', 50); // Default radius 50km
+
+        if (empty($lat) || empty($lon)) {
+            return response()->json(['error' => 'Latitude and longitude are required'], 400);
+        }
+
+        $workshops = Workshop::all();
+        $results = [];
+
+        foreach ($workshops as $workshop) {
+            if (empty($workshop->location)) continue;
+            
+            $coords = explode(',', $workshop->location);
+            if (count($coords) !== 2) continue;
+
+            $distance = $this->calculateDistance($lat, $lon, $coords[0], $coords[1]);
+            
+            if ($distance <= $radius) {
+                $workshop->distance = round($distance, 1);
+                $results[] = $workshop;
+            }
+        }
+
+        // Sort by distance
+        usort($results, function ($a, $b) {
+            return $a->distance <=> $b->distance;
+        });
+
+        return response()->json($results);
+    }
+
+    /**
+     * Haversine distance calculation in km
+     */
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371;
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
+    }
+
+    /**
      * Helper to geocode address via Nominatim (OpenStreetMap)
      * Implements multi-strategy lookup for better accuracy
      */
