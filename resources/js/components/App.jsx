@@ -132,7 +132,7 @@ const Dashboard = ({ user, onBookingClick, setUserLocation: setParentLocation, s
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-8 border border-white/30">
                             <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" /></svg>
                         </div>
-                        <h3 className="text-3xl font-[900] mb-3">Booking Serviss</h3>
+                        <h3 className="text-3xl font-[900] mb-3">Booking Servis</h3>
                         <p className="text-orange-100 font-bold text-lg">Jadwalkan perawatan rutin</p>
                     </div>
                     <div className="p-10 bg-red-600 rounded-[2.5rem] text-white shadow-2xl shadow-red-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
