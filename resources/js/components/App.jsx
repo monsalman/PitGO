@@ -213,60 +213,61 @@ const Dashboard = ({ user }) => {
                                 <div className="flex-1 space-y-4 py-2"><div className="h-6 bg-gray-100 rounded-full w-3/4"></div><div className="h-4 bg-gray-50 rounded-full w-1/2"></div></div>
                             </div>
                         ))
-                    ) : workshops.map((shop) => (
-                        <div key={shop.id} className="group relative bg-white/40 backdrop-blur-2xl p-7 rounded-[3rem] shadow-[0_32px_128px_-32px_rgba(31,38,135,0.08)] border border-white/80 flex flex-col sm:flex-row gap-8 hover:bg-white/60 hover:-translate-y-3 hover:shadow-[0_64px_128px_-32px_rgba(31,38,135,0.15)] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] isolate">
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent -z-10 rounded-[3rem]"></div>
-                            <div className="relative w-full sm:w-44 h-44 rounded-[2rem] overflow-hidden shadow-2xl border-[6px] border-white flex-shrink-0">
-                                <img src={shop.photo || 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=400'} alt={shop.name} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-1000" />
-                                {shop.is_open && (
-                                    <div className="absolute top-3 right-3 bg-red-600 text-white text-[7px] font-black px-2 py-1 rounded-full uppercase tracking-widest flex items-center space-x-1 shadow-xl">
-                                        <div className="w-1 h-1 bg-white rounded-full animate-ping"></div><span>SOS</span>
-                                    </div>
-                                )}
-                            </div>
+                    ) : [...workshops]
+                        .sort((a, b) => (b.is_open ? 1 : 0) - (a.is_open ? 1 : 0))
+                        .map((shop) => (
+                            <div
+                                key={shop.id}
+                                className={`group relative bg-white/40 backdrop-blur-2xl p-7 rounded-[3rem] shadow-[0_32px_128px_-32px_rgba(31,38,135,0.08)] border border-white/80 flex flex-col sm:flex-row gap-8 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] isolate
+                                ${!shop.is_open ? 'opacity-60 grayscale brightness-[0.8] cursor-not-allowed pointer-events-none' : 'hover:bg-white/60 hover:-translate-y-3 hover:shadow-[0_64px_128px_-32px_rgba(31,38,135,0.15)]'}`}
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent -z-10 rounded-[3rem]"></div>
+                                <div className="relative w-full sm:w-44 h-44 rounded-[2rem] overflow-hidden shadow-2xl border-[6px] border-white flex-shrink-0">
+                                    <img src={shop.photo || 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=400'} alt={shop.name} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-1000" />
+                                </div>
 
-                            <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
-                                <div className="space-y-3">
-                                    <div>
-                                        <h3 className="text-xl xl:text-2xl font-black text-gray-900 group-hover:text-orange-600 transition-colors leading-tight truncate mb-1">{shop.name}</h3>
-                                        <div className="flex items-center space-x-2 text-gray-400 group-hover:text-gray-500 transition-colors">
-                                            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
-                                            <p className="text-[11px] font-bold truncate">{shop.address}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center space-x-3">
-                                        <div className="flex items-center space-x-3">
-                                            <div className="inline-flex items-center space-x-1 bg-orange-50 px-2 py-1 rounded-lg border border-orange-100">
-                                                <span className="text-orange-500 text-xs">★</span>
-                                                <span className="text-orange-600 font-black text-xs">{shop.rating || '5.0'}</span>
+                                <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
+                                    <div className="space-y-3">
+                                        <div>
+                                            <h3 className={`text-xl xl:text-2xl font-black transition-colors leading-tight truncate mb-1 ${shop.is_open ? 'text-gray-900 group-hover:text-orange-600' : 'text-gray-500'}`}>{shop.name}</h3>
+                                            <div className="flex items-center space-x-2 text-gray-400 group-hover:text-gray-500 transition-colors">
+                                                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+                                                <p className="text-[11px] font-bold truncate">{shop.address}</p>
                                             </div>
-                                            <span className="text-orange-400 font-bold text-xs">({shop.reviews_count || 0})</span>
                                         </div>
-                                        <span className="text-[10px] font-black text-gray-800">{getDistance(parseCoords(shop.location))}</span>
-                                        <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
-                                        <div className="flex items-center space-x-2 px-2 py-1 bg-slate-50 rounded-lg border border-slate-100">
-                                            {shop.category === 'mobil' ? (
-                                                <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Mobil</span></>
-                                            ) : shop.category === 'motor' ? (
-                                                <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.653 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Motor</span></>
-                                            ) : (
-                                                <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Mobil & Motor</span></>
-                                            )}
+                                        <div className="flex items-center space-x-3">
+                                            <div className="flex items-center space-x-3">
+                                                <div className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg border ${shop.is_open ? 'bg-orange-50 border-orange-100' : 'bg-gray-50 border-gray-100'}`}>
+                                                    <span className={`${shop.is_open ? 'text-orange-500' : 'text-gray-400'} text-xs`}>★</span>
+                                                    <span className={`${shop.is_open ? 'text-orange-600' : 'text-gray-500'} font-black text-xs`}>{shop.rating || '5.0'}</span>
+                                                </div>
+                                                <span className="text-orange-400 font-bold text-xs">({shop.reviews_count || 0})</span>
+                                            </div>
+                                            <span className="text-[10px] font-black text-gray-800">{getDistance(parseCoords(shop.location))}</span>
+                                            <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                            <div className="flex items-center space-x-2 px-2 py-1 bg-slate-50 rounded-lg border border-slate-100">
+                                                {shop.category === 'mobil' ? (
+                                                    <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Mobil</span></>
+                                                ) : shop.category === 'motor' ? (
+                                                    <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.653 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Motor</span></>
+                                                ) : (
+                                                    <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Mobil & Motor</span></>
+                                                )}
+                                            </div>
+                                            <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                            <span className={`text-[9px] font-[900] uppercase tracking-wider ${shop.is_open ? 'text-green-600' : 'text-red-500'}`}>
+                                                {shop.is_open ? 'Buka' : 'Tutup'}
+                                            </span>
                                         </div>
-                                        <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
-                                        <span className={`text-[9px] font-[900] uppercase tracking-wider ${shop.is_open ? 'text-green-600' : 'text-red-500'}`}>
-                                            {shop.is_open ? 'Buka' : 'Tutup'}
-                                        </span>
+                                    </div>
+
+                                    <div className="flex gap-3 mt-6 sm:mt-0">
+                                        <button className={`flex-1 py-3 border text-[10px] font-black rounded-xl transition-all shadow-sm ${shop.is_open ? 'bg-white border-gray-100 text-gray-900 hover:bg-gray-50 active:scale-95' : 'bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed'}`}>Profil</button>
+                                        <button className={`flex-1 py-3 text-[10px] font-black rounded-xl shadow-lg transition-all uppercase tracking-widest leading-none ${shop.is_open ? 'bg-orange-600 text-white shadow-orange-600/20 hover:bg-orange-500 active:scale-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}>Booking</button>
                                     </div>
                                 </div>
-
-                                <div className="flex gap-3 mt-6 sm:mt-0">
-                                    <button className="flex-1 py-3 bg-white border border-gray-100 text-gray-900 text-[10px] font-black rounded-xl hover:bg-gray-50 active:scale-95 transition-all shadow-sm">Profil</button>
-                                    <button className="flex-1 py-3 bg-orange-600 text-white text-[10px] font-black rounded-xl shadow-lg shadow-orange-600/20 hover:bg-orange-500 active:scale-95 transition-all uppercase tracking-widest leading-none">Booking</button>
-                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             </div>
         </div>
@@ -509,10 +510,6 @@ const SearchResults = () => {
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
                             <span>Filter</span>
                         </button>
-                        <button className="flex items-center space-x-3 px-8 py-4 bg-red-600 text-white rounded-xl font-black shadow-2xl shadow-red-200 hover:bg-red-500 active:scale-95 transition-all">
-                            <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                            <span>Bantuan SOS</span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -690,61 +687,61 @@ const SearchResults = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                        {workshops.map((shop) => (
-                            <div key={shop.id} className="group relative bg-white/40 backdrop-blur-2xl p-7 rounded-[3rem] shadow-[0_32px_128px_-32px_rgba(31,38,135,0.08)] border border-white/80 flex flex-col sm:flex-row gap-8 hover:bg-white/60 hover:-translate-y-3 hover:shadow-[0_64px_128px_-32px_rgba(31,38,135,0.15)] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] isolate">
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent -z-10 rounded-[3rem]"></div>
-                                <div className="relative w-full sm:w-44 h-44 rounded-[2rem] overflow-hidden shadow-2xl border-[6px] border-white flex-shrink-0">
-                                    <img src={shop.photo || 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=400'} alt={shop.name} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-1000" />
-                                    {shop.is_open && (
-                                        <div className="absolute top-3 right-3 bg-red-600 text-white text-[7px] font-black px-2 py-1 rounded-full uppercase tracking-widest shadow-xl flex items-center space-x-1">
-                                            <div className="w-1 h-1 bg-white rounded-full animate-ping"></div>
-                                            <span>SOS</span>
-                                        </div>
-                                    )}
-                                </div>
+                        {[...workshops]
+                            .sort((a, b) => (b.is_open ? 1 : 0) - (a.is_open ? 1 : 0))
+                            .map((shop) => (
+                                <div
+                                    key={shop.id}
+                                    className={`group relative bg-white/40 backdrop-blur-2xl p-7 rounded-[3rem] shadow-[0_32px_128px_-32px_rgba(31,38,135,0.08)] border border-white/80 flex flex-col sm:flex-row gap-8 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] isolate
+                                    ${!shop.is_open ? 'opacity-60 grayscale brightness-[0.8] cursor-not-allowed pointer-events-none' : 'hover:bg-white/60 hover:-translate-y-3 hover:shadow-[0_64px_128px_-32px_rgba(31,38,135,0.15)]'}`}
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent -z-10 rounded-[3rem]"></div>
+                                    <div className="relative w-full sm:w-44 h-44 rounded-[2rem] overflow-hidden shadow-2xl border-[6px] border-white flex-shrink-0">
+                                        <img src={shop.photo || 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=400'} alt={shop.name} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-1000" />
+                                    </div>
 
-                                <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
-                                    <div className="space-y-3">
-                                        <div>
-                                            <h3 className="text-xl xl:text-2xl font-black text-gray-900 group-hover:text-orange-600 transition-colors leading-tight truncate mb-1">{shop.name}</h3>
-                                            <div className="flex items-center space-x-2 text-gray-400 group-hover:text-gray-500 transition-colors">
-                                                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
-                                                <p className="text-[11px] font-bold truncate">{shop.address}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-wrap items-center gap-3">
-                                            <div className="flex items-center space-x-3">
-                                                <div className="inline-flex items-center space-x-1 bg-orange-50 px-2 py-1 rounded-lg border border-orange-100">
-                                                    <span className="text-orange-500 text-xs">★</span>
-                                                    <span className="text-orange-600 font-black text-xs">{shop.rating || '5.0'}</span>
+                                    <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
+                                        <div className="space-y-3">
+                                            <div>
+                                                <h3 className={`text-xl xl:text-2xl font-black transition-colors leading-tight truncate mb-1 ${shop.is_open ? 'text-gray-900 group-hover:text-orange-600' : 'text-gray-500'}`}>{shop.name}</h3>
+                                                <div className="flex items-center space-x-2 text-gray-400 group-hover:text-gray-500 transition-colors">
+                                                    <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+                                                    <p className="text-[11px] font-bold truncate">{shop.address}</p>
                                                 </div>
-                                                <span className="text-orange-400 font-bold text-[10px]">({shop.reviews_count || 0})</span>
                                             </div>
-                                            <span className="text-[10px] font-black text-gray-800">{getDistance(parseCoords(shop.location))}</span>
-                                            <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
-                                            <div className="flex items-center space-x-2 px-2 py-1 bg-slate-50 rounded-lg border border-slate-100">
-                                                {shop.category === 'mobil' ? (
-                                                    <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Mobil</span></>
-                                                ) : shop.category === 'motor' ? (
-                                                    <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.653 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Motor</span></>
-                                                ) : (
-                                                    <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Mobil & Motor</span></>
-                                                )}
+                                            <div className="flex flex-wrap items-center gap-3">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg border ${shop.is_open ? 'bg-orange-50 border-orange-100' : 'bg-gray-50 border-gray-100'}`}>
+                                                        <span className={`${shop.is_open ? 'text-orange-500' : 'text-gray-400'} text-xs`}>★</span>
+                                                        <span className={`${shop.is_open ? 'text-orange-600' : 'text-gray-500'} font-black text-xs`}>{shop.rating || '5.0'}</span>
+                                                    </div>
+                                                    <span className="text-orange-400 font-bold text-[10px]">({shop.reviews_count || 0})</span>
+                                                </div>
+                                                <span className="text-[10px] font-black text-gray-800">{getDistance(parseCoords(shop.location))}</span>
+                                                <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                                <div className="flex items-center space-x-2 px-2 py-1 bg-slate-50 rounded-lg border border-slate-100">
+                                                    {shop.category === 'mobil' ? (
+                                                        <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1-1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Mobil</span></>
+                                                    ) : shop.category === 'motor' ? (
+                                                        <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.653 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Motor</span></>
+                                                    ) : (
+                                                        <><svg className="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg><span className="text-[9px] font-black text-slate-600 uppercase">Mobil & Motor</span></>
+                                                    )}
+                                                </div>
+                                                <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                                <span className={`text-[9px] font-[900] uppercase tracking-wider ${shop.is_open ? 'text-green-600' : 'text-red-500'}`}>
+                                                    {shop.is_open ? 'Buka' : 'Tutup'}
+                                                </span>
                                             </div>
-                                            <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
-                                            <span className={`text-[9px] font-[900] uppercase tracking-wider ${shop.is_open ? 'text-green-600' : 'text-red-500'}`}>
-                                                {shop.is_open ? 'Buka' : 'Tutup'}
-                                            </span>
+                                        </div>
+
+                                        <div className="flex gap-3 mt-6 sm:mt-0">
+                                            <button className={`flex-1 py-3 border text-[10px] font-black rounded-xl transition-all shadow-sm ${shop.is_open ? 'bg-white border-gray-100 text-gray-900 hover:bg-gray-50 active:scale-95' : 'bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed'}`}>Profil</button>
+                                            <button className={`flex-1 py-3 text-[10px] font-black rounded-xl shadow-lg transition-all shadow-orange-600/20 hover:bg-orange-500 ${shop.is_open ? 'bg-orange-600 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}>Booking</button>
                                         </div>
                                     </div>
-
-                                    <div className="flex gap-3 mt-6 sm:mt-0">
-                                        <button className="flex-1 py-3 bg-white border border-gray-100 text-gray-900 text-[10px] font-black rounded-xl hover:bg-gray-50 transition-all shadow-sm">Profil</button>
-                                        <button className="flex-1 py-3 bg-orange-600 text-white text-[10px] font-black rounded-xl shadow-lg shadow-orange-600/20 hover:bg-orange-500 transition-all">Booking</button>
-                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
                     </div>
                 )}
 
@@ -1050,7 +1047,7 @@ const App = () => {
                             <Dashboard user={user} />
                         ) : (
                             <>
-                                <Hero 
+                                <Hero
                                     onSearch={async (query) => {
                                         try {
                                             const response = await axios.get(`/api/geocode?q=${encodeURIComponent(query)}`);
@@ -1064,7 +1061,7 @@ const App = () => {
                                             console.error("Geocoding failed:", error);
                                             alert("Terjadi kesalahan saat mencari lokasi.");
                                         }
-                                    }} 
+                                    }}
                                     onUseLocation={(callback) => {
                                         if ("geolocation" in navigator) {
                                             navigator.geolocation.getCurrentPosition(
@@ -1091,12 +1088,12 @@ const App = () => {
                         )
                     }
                 />
-                    <Route path="/results" element={
-                        <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
-                            <SearchResults />
-                        </div>
-                    } />
-                    <Route path="/login" element={
+                <Route path="/results" element={
+                    <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                        <SearchResults />
+                    </div>
+                } />
+                <Route path="/login" element={
                     <Login
                         onLoginSuccess={handleLoginSuccess}
                         onBackToHome={() => navigate('/')}
