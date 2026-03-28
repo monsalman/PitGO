@@ -24,11 +24,11 @@ class UserSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'salman@example.com'],
+            ['email' => 'salman@pitgo.com'],
             [
                 'name' => 'Salman',
                 'phone' => '089512345678',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('salman123'),
                 'role' => 'user',
             ]
         );
