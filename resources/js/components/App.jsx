@@ -132,7 +132,7 @@ const Dashboard = ({ user, onBookingClick, setUserLocation: setParentLocation, s
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-8 border border-white/30">
                             <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77Z" /></svg>
                         </div>
-                        <h3 className="text-3xl font-[900] mb-3">Booking Servis</h3>
+                        <h3 className="text-3xl font-[900] mb-3">Booking Serviss</h3>
                         <p className="text-orange-100 font-bold text-lg">Jadwalkan perawatan rutin</p>
                     </div>
                     <div className="p-10 bg-red-600 rounded-[2.5rem] text-white shadow-2xl shadow-red-200 group cursor-pointer hover:-translate-y-2 transition-all relative overflow-hidden isolate">
@@ -285,7 +285,7 @@ const Dashboard = ({ user, onBookingClick, setUserLocation: setParentLocation, s
 
                                     <div className="flex gap-3 mt-6 sm:mt-0">
                                         <button className={`flex-1 py-3 border text-[10px] font-black rounded-xl transition-all shadow-sm ${shop.is_open ? 'bg-white border-gray-100 text-gray-900 hover:bg-gray-50 active:scale-95' : 'bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed'}`}>Profil</button>
-                                        <button 
+                                        <button
                                             onClick={() => handleBookingClick(shop)}
                                             className={`flex-1 py-3 text-[10px] font-black rounded-xl shadow-lg transition-all uppercase tracking-widest leading-none ${shop.is_open ? 'bg-orange-600 text-white shadow-orange-600/20 hover:bg-orange-500 active:scale-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}
                                         >
@@ -775,7 +775,7 @@ const SearchResults = ({ onBookingClick, setUserLocation: setParentLocation, set
 
                                         <div className="flex gap-3 mt-6 sm:mt-0">
                                             <button className={`flex-1 py-3 border text-[10px] font-black rounded-xl transition-all shadow-sm ${shop.is_open ? 'bg-white border-gray-100 text-gray-900 hover:bg-gray-50 active:scale-95' : 'bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed'}`}>Profil</button>
-                                            <button 
+                                            <button
                                                 onClick={() => handleBookingClick(shop)}
                                                 className={`flex-1 py-3 text-[10px] font-black rounded-xl shadow-lg transition-all shadow-orange-600/20 hover:bg-orange-500 ${shop.is_open ? 'bg-orange-600 text-white active:scale-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}
                                             >
@@ -1101,8 +1101,8 @@ const App = () => {
                     path="/"
                     element={
                         user ? (
-                            <Dashboard 
-                                user={user} 
+                            <Dashboard
+                                user={user}
                                 onBookingClick={handleBookingClick}
                                 setUserLocation={setUserLocation}
                                 setUserAddress={setUserAddress}
@@ -1152,7 +1152,7 @@ const App = () => {
                 />
                 <Route path="/results" element={
                     <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
-                        <SearchResults 
+                        <SearchResults
                             onBookingClick={handleBookingClick}
                             setUserLocation={setUserLocation}
                             setUserAddress={setUserAddress}
@@ -1181,7 +1181,7 @@ const App = () => {
             {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}
 
             {isBookingModalOpen && selectedWorkshop && (
-                <BookingModal 
+                <BookingModal
                     isOpen={isBookingModalOpen}
                     onClose={() => setIsBookingModalOpen(false)}
                     workshop={selectedWorkshop}
