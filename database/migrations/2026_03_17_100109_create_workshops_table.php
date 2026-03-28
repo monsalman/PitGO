@@ -21,7 +21,15 @@ return new class extends Migration
             $table->integer('reviews_count')->default(0);
             $table->string('category')->default('semua'); // mobil, motor, semua
             $table->boolean('is_open')->default(true);
+            $table->uuid('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
+        });
+
+        // Add foreign key constraint to users table for workshop_id
+        Schema::table('users', function (Blueprint $table) {
+            if (Schema::hasColumn('users', 'workshop_id')) {
+                $table->foreign('workshop_id')->references('id')->on('workshops')->onDelete('set null');
+            }
         });
     }
 
@@ -30,6 +38,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            if (Schema::hasColumn('users', 'workshop_id')) {
+                $table->dropForeign(['workshop_id']);
+            }
+        });
         Schema::dropIfExists('workshops');
     }
 };

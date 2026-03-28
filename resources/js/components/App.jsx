@@ -7,6 +7,9 @@ import Register from './Register';
 import Navbar from './Navbar';
 import Management from './Management';
 import axios from 'axios';
+import BookingModal from './BookingModal';
+import OrderTracking from './OrderTracking';
+import WorkshopDashboard from './WorkshopDashboard';
 
 // Custom Markers Styling
 const createUserIcon = () => {
@@ -36,11 +39,26 @@ const createWorkshopIcon = () => {
     });
 };
 
-const Dashboard = ({ user }) => {
+const reverseGeocode = async (lat, lon) => {
+    try {
+        const response = await axios.get(`/api/reverse-geocode?lat=${lat}&lon=${lon}`);
+        return response.data.display_name;
+    } catch (err) {
+        console.error("Reverse geocoding failed:", err);
+        return "";
+    }
+};
+
+const Dashboard = ({ user, onBookingClick, setUserLocation: setParentLocation, setUserAddress: setParentAddress }) => {
     const [userLocation, setUserLocation] = useState(null);
+    const [userAddress, setUserAddress] = useState("");
     const [locationLabel, setLocationLabel] = useState("Mencari lokasi Anda...");
     const [workshops, setWorkshops] = useState([]);
     const [loadingWorkshops, setLoadingWorkshops] = useState(true);
+
+    const handleBookingClick = (shop) => {
+        onBookingClick(shop);
+    };
 
     useEffect(() => {
         const fetchWorkshops = async () => {
@@ -57,10 +75,14 @@ const Dashboard = ({ user }) => {
 
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
-                (position) => {
+                async (position) => {
                     const { latitude, longitude } = position.coords;
                     setUserLocation([latitude, longitude]);
+                    setParentLocation([latitude, longitude]);
                     setLocationLabel(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+                    const addr = await reverseGeocode(latitude, longitude);
+                    setUserAddress(addr);
+                    setParentAddress(addr);
                 },
                 (error) => {
                     console.error("Error getting location:", error);
@@ -263,7 +285,12 @@ const Dashboard = ({ user }) => {
 
                                     <div className="flex gap-3 mt-6 sm:mt-0">
                                         <button className={`flex-1 py-3 border text-[10px] font-black rounded-xl transition-all shadow-sm ${shop.is_open ? 'bg-white border-gray-100 text-gray-900 hover:bg-gray-50 active:scale-95' : 'bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed'}`}>Profil</button>
-                                        <button className={`flex-1 py-3 text-[10px] font-black rounded-xl shadow-lg transition-all uppercase tracking-widest leading-none ${shop.is_open ? 'bg-orange-600 text-white shadow-orange-600/20 hover:bg-orange-500 active:scale-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}>Booking</button>
+                                        <button 
+                                            onClick={() => handleBookingClick(shop)}
+                                            className={`flex-1 py-3 text-[10px] font-black rounded-xl shadow-lg transition-all uppercase tracking-widest leading-none ${shop.is_open ? 'bg-orange-600 text-white shadow-orange-600/20 hover:bg-orange-500 active:scale-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}
+                                        >
+                                            Booking
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -391,14 +418,19 @@ const Hero = ({ onSearch, onUseLocation }) => {
     );
 };
 
-const SearchResults = () => {
+const SearchResults = ({ onBookingClick, setUserLocation: setParentLocation, setUserAddress: setParentAddress }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [userLocation, setUserLocation] = useState(null);
+    const [userAddress, setUserAddress] = useState("");
     const [locationLabel, setLocationLabel] = useState("Mencari lokasi...");
     const [workshops, setWorkshops] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditingLocation, setIsEditingLocation] = useState(false);
     const [editQuery, setEditQuery] = useState("");
+
+    const handleBookingClick = (shop) => {
+        onBookingClick(shop);
+    };
 
     const getDistance = (targetLoc) => {
         if (!userLocation || !targetLoc) return "?.? KM";
@@ -429,13 +461,18 @@ const SearchResults = () => {
             setUserLocation([lat, lng]);
             setLocationLabel(query || `Lokasi: ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
             fetchNearbyWorkshops(lat, lng);
+            reverseGeocode(lat, lng).then(setUserAddress);
         } else if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
-                (position) => {
+                async (position) => {
                     const { latitude, longitude } = position.coords;
                     setUserLocation([latitude, longitude]);
+                    setParentLocation([latitude, longitude]);
                     setLocationLabel(`📍 Lokasi: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
                     fetchNearbyWorkshops(latitude, longitude);
+                    const addr = await reverseGeocode(latitude, longitude);
+                    setUserAddress(addr);
+                    setParentAddress(addr);
                 },
                 (error) => {
                     console.error("Error getting location:", error);
@@ -443,6 +480,7 @@ const SearchResults = () => {
                     setUserLocation(defaultLoc);
                     setLocationLabel("Lokasi tidak dapat diakses (Default: Jakarta)");
                     fetchNearbyWorkshops(defaultLoc[0], defaultLoc[1]);
+                    reverseGeocode(defaultLoc[0], defaultLoc[1]).then(setUserAddress);
                 }
             );
         }
@@ -737,30 +775,35 @@ const SearchResults = () => {
 
                                         <div className="flex gap-3 mt-6 sm:mt-0">
                                             <button className={`flex-1 py-3 border text-[10px] font-black rounded-xl transition-all shadow-sm ${shop.is_open ? 'bg-white border-gray-100 text-gray-900 hover:bg-gray-50 active:scale-95' : 'bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed'}`}>Profil</button>
-                                            <button className={`flex-1 py-3 text-[10px] font-black rounded-xl shadow-lg transition-all shadow-orange-600/20 hover:bg-orange-500 ${shop.is_open ? 'bg-orange-600 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}>Booking</button>
+                                            <button 
+                                                onClick={() => handleBookingClick(shop)}
+                                                className={`flex-1 py-3 text-[10px] font-black rounded-xl shadow-lg transition-all shadow-orange-600/20 hover:bg-orange-500 ${shop.is_open ? 'bg-orange-600 text-white active:scale-95' : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}
+                                            >
+                                                Booking
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                     </div>
                 )}
+            </div>
 
-                <div className="mt-32 p-16 md:p-24 rounded-[4rem] bg-slate-900 overflow-hidden relative isolate shadow-3xl text-center">
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full -mr-64 -mt-64 blur-[120px]"></div>
-                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full -ml-64 -mb-64 blur-[120px]"></div>
+            <div className="mt-32 p-16 md:p-24 rounded-[4rem] bg-slate-900 overflow-hidden relative isolate shadow-3xl text-center">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full -mr-64 -mt-64 blur-[120px]"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full -ml-64 -mb-64 blur-[120px]"></div>
 
-                    <div className="max-w-4xl mx-auto relative z-10">
-                        <div className="w-28 h-28 bg-white/5 backdrop-blur-xl rounded-3xl flex items-center justify-center mx-auto mb-12 border border-white/10 shadow-inner">
-                            <svg className="w-14 h-14 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                        </div>
-                        <h4 className="text-5xl lg:text-7xl font-black text-white mb-8 tracking-tighter leading-tight">Belum Ada Bengkel <span className="text-orange-500 italic">Favoritmu?</span></h4>
-                        <p className="text-gray-400 text-xl lg:text-2xl font-bold mb-16 max-w-2xl mx-auto opacity-80 leading-relaxed">Jangan khawatir, mitra bengkel kami terus bertambah setiap hari. Coba perluas area pencarian untuk menemukan teknisi terbaik.</p>
-                        <button className="inline-flex items-center space-x-5 px-16 py-7 bg-orange-600 text-white font-[950] text-xl rounded-3xl shadow-3xl shadow-orange-600/50 hover:bg-orange-500 hover:-translate-y-2 transition-all group overflow-hidden relative">
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full duration-1000 transition-transform"></div>
-                            <span className="relative z-10 tracking-widest uppercase">Perluas Radius Pencarian</span>
-                            <svg className="w-7 h-7 relative z-10 transition-transform group-hover:translate-x-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                        </button>
+                <div className="max-w-4xl mx-auto relative z-10">
+                    <div className="w-28 h-28 bg-white/5 backdrop-blur-xl rounded-3xl flex items-center justify-center mx-auto mb-12 border border-white/10 shadow-inner">
+                        <svg className="w-14 h-14 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     </div>
+                    <h4 className="text-5xl lg:text-7xl font-black text-white mb-8 tracking-tighter leading-tight">Belum Ada Bengkel <span className="text-orange-500 italic">Favoritmu?</span></h4>
+                    <p className="text-gray-400 text-xl lg:text-2xl font-bold mb-16 max-w-2xl mx-auto opacity-80 leading-relaxed">Jangan khawatir, mitra bengkel kami terus bertambah setiap hari. Coba perluas area pencarian untuk menemukan teknisi terbaik.</p>
+                    <button className="inline-flex items-center space-x-5 px-16 py-7 bg-orange-600 text-white font-[950] text-xl rounded-3xl shadow-3xl shadow-orange-600/50 hover:bg-orange-500 hover:-translate-y-2 transition-all group overflow-hidden relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full duration-1000 transition-transform"></div>
+                        <span className="relative z-10 tracking-widest uppercase">Perluas Radius Pencarian</span>
+                        <svg className="w-7 h-7 relative z-10 transition-transform group-hover:translate-x-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -981,6 +1024,16 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [authLoading, setAuthLoading] = useState(true);
     const navigate = useNavigate();
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [selectedWorkshop, setSelectedWorkshop] = useState(null);
+    const [userLocation, setUserLocation] = useState(null);
+    const [userAddress, setUserAddress] = useState("");
+
+    const handleBookingClick = (shop) => {
+        setSelectedWorkshop(shop);
+        setIsBookingModalOpen(true);
+    };
+
     const location = useLocation();
 
     useEffect(() => {
@@ -1004,7 +1057,11 @@ const App = () => {
 
     const handleLoginSuccess = (userData) => {
         setUser(userData);
-        navigate('/');
+        if (userData.role === 'workshop' || userData.role === 'mechanic') {
+            navigate('/workshop/dashboard');
+        } else {
+            navigate('/');
+        }
     };
 
     const handleRegisterSuccess = (userData) => {
@@ -1044,7 +1101,12 @@ const App = () => {
                     path="/"
                     element={
                         user ? (
-                            <Dashboard user={user} />
+                            <Dashboard 
+                                user={user} 
+                                onBookingClick={handleBookingClick}
+                                setUserLocation={setUserLocation}
+                                setUserAddress={setUserAddress}
+                            />
                         ) : (
                             <>
                                 <Hero
@@ -1090,7 +1152,11 @@ const App = () => {
                 />
                 <Route path="/results" element={
                     <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
-                        <SearchResults />
+                        <SearchResults 
+                            onBookingClick={handleBookingClick}
+                            setUserLocation={setUserLocation}
+                            setUserAddress={setUserAddress}
+                        />
                     </div>
                 } />
                 <Route path="/login" element={
@@ -1108,9 +1174,21 @@ const App = () => {
                     />
                 } />
                 <Route path="/management" element={<Management />} />
+                <Route path="/booking/:id" element={<OrderTracking user={user} />} />
+                <Route path="/workshop/dashboard" element={<WorkshopDashboard user={user} onLogout={handleLogout} />} />
             </Routes>
 
             {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}
+
+            {isBookingModalOpen && selectedWorkshop && (
+                <BookingModal 
+                    isOpen={isBookingModalOpen}
+                    onClose={() => setIsBookingModalOpen(false)}
+                    workshop={selectedWorkshop}
+                    userLocation={userLocation}
+                    userAddress={userAddress}
+                />
+            )}
         </div>
     );
 };

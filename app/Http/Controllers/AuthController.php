@@ -68,9 +68,27 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
+        $user = $request->user();
         return response()->json([
-            'user' => $request->user()
+            'user' => $user
         ]);
+    }
+
+    public function mechanics(Request $request)
+    {
+        $user = $request->user();
+        if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
+
+        // Admins can see all mechanics; workshop users only see their own
+        if ($user->role === 'admin') {
+            return response()->json(User::where('role', 'mechanic')->get());
+        }
+
+        return response()->json(
+            User::where('role', 'mechanic')
+                ->where('workshop_id', $user->workshop_id)
+                ->get()
+        );
     }
 
     public function index()

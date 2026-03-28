@@ -104,6 +104,21 @@ const Navbar = ({ user, onLogout }) => {
                         Management
                     </a>
                 )}
+
+                {(user?.role === 'workshop' || user?.role === 'mechanic') && (
+                    <a 
+                        ref={el => linksRef.current['/workshop/dashboard'] = el}
+                        href="#" 
+                        onClick={(e) => { e.preventDefault(); navigate('/workshop/dashboard'); }} 
+                        className={`relative z-10 text-xs font-black px-6 py-2 rounded-full transition-colors duration-500 ${
+                            isActive('/workshop/dashboard') 
+                            ? (scrolled ? 'text-orange-600' : 'text-white') 
+                            : (scrolled ? 'text-white/60 hover:text-white' : 'text-gray-500 hover:text-gray-900')
+                        }`}
+                    >
+                        Workshop
+                    </a>
+                )}
             </div>
 
             <div className="flex items-center space-x-4">
@@ -112,7 +127,9 @@ const Navbar = ({ user, onLogout }) => {
                         scrolled ? 'bg-white/10 border border-white/10' : 'bg-gray-100/50 border border-gray-200/50'
                     }`}>
                         <div className={`px-4 py-1.5 hidden lg:block border-r transition-colors duration-500 ${scrolled ? 'border-white/10' : 'border-gray-200'}`}>
-                            <span className={`text-[10px] font-black uppercase tracking-widest block leading-none mb-1 ${scrolled ? 'text-white/50' : 'text-gray-400'}`}>Admin Panel</span>
+                            <span className={`text-[10px] font-black uppercase tracking-widest block leading-none mb-1 ${scrolled ? 'text-white/50' : 'text-gray-400'}`}>
+                                {user.role === 'admin' ? 'Admin Panel' : (user.role === 'mechanic' ? 'Mechanic Panel' : 'Workshop Panel')}
+                            </span>
                             <span className={`text-sm font-black transition-colors duration-500 ${scrolled ? 'text-white' : 'text-gray-900'}`}>{user.name}</span>
                         </div>
                         <button

@@ -13,24 +13,40 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'admin@pitgo.com'],
-            [
-                'name' => 'Admin PitGO',
-                'phone' => '081234567890',
-                'password' => Hash::make('admin123'),
-                'role' => 'admin',
-            ]
-        );
+        // Admin Account
+        User::create([
+            'name' => 'Admin PitGO',
+            'email' => 'admin@pitgo.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'phone' => '081234567890',
+        ]);
 
-        User::updateOrCreate(
-            ['email' => 'salman@pitgo.com'],
-            [
-                'name' => 'Salman',
-                'phone' => '089512345678',
-                'password' => Hash::make('salman123'),
-                'role' => 'user',
-            ]
-        );
+        // Regular User Account
+        User::create([
+            'name' => 'John Doe',
+            'email' => 'user@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'user',
+            'phone' => '081234567891',
+        ]);
+
+        // Workshop Owner Account
+        User::create([
+            'name' => 'Budi Workshop',
+            'email' => 'workshop@pitgo.com',
+            'password' => Hash::make('password'),
+            'role' => 'workshop',
+            'phone' => '081234567892',
+        ]);
+
+        // Mechanic Account
+        User::create([
+            'name' => 'Agus Mekanik',
+            'email' => 'mechanic@pitgo.com',
+            'password' => Hash::make('password'),
+            'role' => 'mechanic',
+            'phone' => '081234567893',
+        ]);
     }
 }
