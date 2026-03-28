@@ -54,6 +54,10 @@ const Management = () => {
     const [isGeocoding, setIsGeocoding] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
     const lookupAddress = async (address) => {
         if (!address || address.length < 5) return;
         setIsGeocoding(true);
@@ -175,6 +179,7 @@ const Management = () => {
     }, [isModalOpen, isDeleteModalOpen]);
 
     useEffect(() => {
+        setCurrentPage(1); // Reset to first page when changing tabs
         if (activeTab === 'users') {
             fetchUsers();
         } else {
@@ -366,144 +371,197 @@ const Management = () => {
                                                 </div>
                                             </td>
                                         </tr>
-                                    ) : activeTab === 'users' && users.length > 0 ? (
-                                        users.map((u) => (
-                                            <tr key={u.id} className="hover:bg-white/50 transition-all duration-500 group/row">
-                                                <td className="px-12 py-10">
-                                                    <div className="flex items-center space-x-7">
-                                                        <div className="relative">
-                                                            <div className="absolute -inset-1 bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl blur opacity-0 group-hover/row:opacity-20 transition duration-500"></div>
-                                                            <div className="relative w-16 h-16 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl flex items-center justify-center font-black text-gray-300 group-hover/row:text-orange-600 transition-all duration-500 uppercase text-2xl border border-white">
-                                                                {u.name.charAt(0)}
-                                                            </div>
+                                    ) : (() => {
+                                        const data = activeTab === 'users' ? users : workshops;
+                                        if (data.length === 0) {
+                                            return (
+                                                <tr>
+                                                    <td colSpan="4" className="px-12 py-24 text-center">
+                                                        <div className="flex flex-col items-center space-y-4 opacity-30">
+                                                            <svg className="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                                            <span className="font-black uppercase tracking-[0.5em] text-[10px]">Registry Zero State</span>
                                                         </div>
-                                                        <div>
-                                                            <div className="font-black text-gray-900 text-2xl leading-tight tracking-tighter group-hover/row:translate-x-1 transition-transform duration-500">{u.name}</div>
-                                                            <div className="text-gray-400 font-bold text-[10px] tracking-[0.2em] mt-2 group-hover/row:text-gray-900 transition-colors duration-500">{u.email}</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-12 py-10">
-                                                    <div className="font-black text-gray-700 tracking-[-0.05em] text-xl opacity-80 group-hover/row:opacity-100 transition-opacity">
-                                                        {u.phone || '—'}
-                                                    </div>
-                                                </td>
-                                                <td className="px-12 py-10">
-                                                    <div className={`inline-flex px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.25em] transition-all duration-500 shadow-sm border ${u.role === 'admin'
-                                                        ? 'bg-gray-900 text-white border-gray-800 shadow-[0_10px_20px_rgba(0,0,0,0.1)] ring-4 ring-gray-900/5'
-                                                        : 'bg-white/80 text-gray-400 border-white group-hover/row:border-blue-200'
-                                                        }`}>
-                                                        <span className="flex items-center">
-                                                            <span className={`w-1.5 h-1.5 rounded-full mr-2.5 ${u.role === 'admin' ? 'bg-orange-500 animate-pulse' : 'bg-blue-400'}`}></span>
-                                                            {u.role}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td className="px-12 py-10 text-right">
-                                                    <div className="flex justify-end space-x-4">
-                                                        <button
-                                                            onClick={() => handleOpenModal(u)}
-                                                            className="w-14 h-14 flex items-center justify-center bg-white/60 backdrop-blur-md text-blue-500 rounded-full border border-white shadow-sm hover:bg-blue-600 hover:text-white hover:-translate-y-1.5 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-90"
-                                                        >
-                                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => confirmDelete(u)}
-                                                            className="w-14 h-14 flex items-center justify-center bg-white/60 backdrop-blur-md text-red-500 rounded-full border border-white shadow-sm hover:bg-red-600 hover:text-white hover:-translate-y-1.5 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-90"
-                                                        >
-                                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : activeTab === 'workshops' && workshops.length > 0 ? (
-                                        workshops.map((w) => (
-                                            <tr key={w.id} className="hover:bg-white/50 transition-all duration-500 group/row">
-                                                <td className="px-12 py-10">
-                                                    <div className="flex items-center space-x-7">
-                                                        <div className="relative">
-                                                            <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl blur opacity-0 group-hover/row:opacity-20 transition duration-500"></div>
-                                                            <div className="relative w-20 h-20 bg-white shadow-lg rounded-2xl overflow-hidden border border-white">
-                                                                {w.photo ? (
-                                                                    <img src={w.photo} alt={w.name} className="w-full h-full object-cover" />
-                                                                ) : (
-                                                                    <div className="w-full h-full flex items-center justify-center font-black text-gray-200 text-3xl">
-                                                                        {w.name.charAt(0)}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+
+                                        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+                                        const paginatedData = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+                                        return paginatedData.map((item) => {
+                                            if (activeTab === 'users') {
+                                                const u = item;
+                                                return (
+                                                    <tr key={u.id} className="hover:bg-white/50 transition-all duration-500 group/row">
+                                                        <td className="px-12 py-10">
+                                                            <div className="flex items-center space-x-7">
+                                                                <div className="relative">
+                                                                    <div className="absolute -inset-1 bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl blur opacity-0 group-hover/row:opacity-20 transition duration-500"></div>
+                                                                    <div className="relative w-16 h-16 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl flex items-center justify-center font-black text-gray-300 group-hover/row:text-orange-600 transition-all duration-500 uppercase text-2xl border border-white">
+                                                                        {u.name.charAt(0)}
                                                                     </div>
-                                                                )}
+                                                                </div>
+                                                                <div>
+                                                                    <div className="font-black text-gray-900 text-2xl leading-tight tracking-tighter group-hover/row:translate-x-1 transition-transform duration-500">{u.name}</div>
+                                                                    <div className="text-gray-400 font-bold text-[10px] tracking-[0.2em] mt-2 group-hover/row:text-gray-900 transition-colors duration-500">{u.email}</div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div>
-                                                            <div className="font-black text-gray-900 text-2xl leading-tight tracking-tighter group-hover/row:translate-x-1 transition-transform duration-500">{w.name}</div>
-                                                            <div className="flex items-center mt-2 space-x-3">
-                                                                <span className="text-orange-500 text-sm font-black flex items-center">
-                                                                    <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                                                                    {w.rating || '5.0'}
+                                                        </td>
+                                                        <td className="px-12 py-10">
+                                                            <div className="font-black text-gray-700 tracking-[-0.05em] text-xl opacity-80 group-hover/row:opacity-100 transition-opacity">
+                                                                {u.phone || '—'}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-12 py-10">
+                                                            <div className={`inline-flex px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.25em] transition-all duration-500 shadow-sm border ${u.role === 'admin'
+                                                                ? 'bg-gray-900 text-white border-gray-800 shadow-[0_10px_20px_rgba(0,0,0,0.1)] ring-4 ring-gray-900/5'
+                                                                : 'bg-white/80 text-gray-400 border-white group-hover/row:border-blue-200'
+                                                                }`}>
+                                                                <span className="flex items-center">
+                                                                    <span className={`w-1.5 h-1.5 rounded-full mr-2.5 ${u.role === 'admin' ? 'bg-orange-500 animate-pulse' : 'bg-blue-400'}`}></span>
+                                                                    {u.role}
                                                                 </span>
-                                                                <span className="text-gray-400 font-bold text-xs opacity-60">({w.reviews_count || 0})</span>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-12 py-10">
-                                                    <div className="space-y-3">
-                                                        <div className="max-w-[200px]">
-                                                            <div className="text-gray-400 font-bold text-[10px] tracking-[0.1em] uppercase mb-1">Address</div>
-                                                            <div className="text-gray-900 font-black text-xs leading-relaxed line-clamp-2 uppercase">
-                                                                {w.address}
+                                                        </td>
+                                                        <td className="px-12 py-10 text-right">
+                                                            <div className="flex justify-end space-x-4">
+                                                                <button
+                                                                    onClick={() => handleOpenModal(u)}
+                                                                    className="w-14 h-14 flex items-center justify-center bg-white/60 backdrop-blur-md text-blue-500 rounded-full border border-white shadow-sm hover:bg-blue-600 hover:text-white hover:-translate-y-1.5 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-90"
+                                                                >
+                                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => confirmDelete(u)}
+                                                                    className="w-14 h-14 flex items-center justify-center bg-white/60 backdrop-blur-md text-red-500 rounded-full border border-white shadow-sm hover:bg-red-600 hover:text-white hover:-translate-y-1.5 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-90"
+                                                                >
+                                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                                </button>
                                                             </div>
-                                                        </div>
-                                                        <div className="space-y-1">
-                                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Store Coordinate</div>
-                                                            <div className="font-black text-gray-700 tracking-[-0.05em] text-sm opacity-80">
-                                                                {w.location || 'Pending Geocode'}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            } else {
+                                                const w = item;
+                                                return (
+                                                    <tr key={w.id} className="hover:bg-white/50 transition-all duration-500 group/row">
+                                                        <td className="px-12 py-10">
+                                                            <div className="flex items-center space-x-7">
+                                                                <div className="relative">
+                                                                    <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl blur opacity-0 group-hover/row:opacity-20 transition duration-500"></div>
+                                                                    <div className="relative w-20 h-20 bg-white shadow-lg rounded-2xl overflow-hidden border border-white">
+                                                                        {w.photo ? (
+                                                                            <img src={w.photo} alt={w.name} className="w-full h-full object-cover" />
+                                                                        ) : (
+                                                                            <div className="w-full h-full flex items-center justify-center font-black text-gray-200 text-3xl">
+                                                                                {w.name.charAt(0)}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <div className="font-black text-gray-900 text-2xl leading-tight tracking-tighter group-hover/row:translate-x-1 transition-transform duration-500">{w.name}</div>
+                                                                    <div className="flex items-center mt-2 space-x-3">
+                                                                        <span className="text-orange-500 text-sm font-black flex items-center">
+                                                                            <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                                                            {w.rating || '5.0'}
+                                                                        </span>
+                                                                        <span className="text-gray-400 font-bold text-xs opacity-60">({w.reviews_count || 0})</span>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-12 py-10">
-                                                    <div className={`inline-flex px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.25em] transition-all duration-500 shadow-sm border ${w.is_open
-                                                        ? 'bg-green-500 text-white border-green-400 shadow-[0_10px_20px_rgba(34,197,94,0.1)]'
-                                                        : 'bg-red-500 text-white border-red-400 shadow-[0_10px_20px_rgba(239,68,68,0.1)]'
-                                                        }`}>
-                                                        <span className="flex items-center">
-                                                            <span className={`w-1.5 h-1.5 rounded-full mr-2.5 bg-white animate-pulse`}></span>
-                                                            {w.is_open ? 'Open' : 'Closed'}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td className="px-12 py-10 text-right">
-                                                    <div className="flex justify-end space-x-4">
-                                                        <button
-                                                            onClick={() => handleOpenModal(w)}
-                                                            className="w-14 h-14 flex items-center justify-center bg-white/60 backdrop-blur-md text-blue-500 rounded-full border border-white shadow-sm hover:bg-blue-600 hover:text-white hover:-translate-y-1.5 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-90"
-                                                        >
-                                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => confirmDelete(w)}
-                                                            className="w-14 h-14 flex items-center justify-center bg-white/60 backdrop-blur-md text-red-500 rounded-full border border-white shadow-sm hover:bg-red-600 hover:text-white hover:-translate-y-1.5 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-90"
-                                                        >
-                                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="4" className="px-12 py-24 text-center">
-                                                <div className="flex flex-col items-center space-y-4 opacity-30">
-                                                    <svg className="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                                                    <span className="font-black uppercase tracking-[0.5em] text-[10px]">Registry Zero State</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )}
+                                                        </td>
+                                                        <td className="px-12 py-10">
+                                                            <div className="space-y-3">
+                                                                <div className="max-w-[200px]">
+                                                                    <div className="text-gray-400 font-bold text-[10px] tracking-[0.1em] uppercase mb-1">Address</div>
+                                                                    <div className="text-gray-900 font-black text-xs leading-relaxed line-clamp-2 uppercase">
+                                                                        {w.address}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="space-y-1">
+                                                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Store Coordinate</div>
+                                                                    <div className="font-black text-gray-700 tracking-[-0.05em] text-sm opacity-80">
+                                                                        {w.location || 'Pending Geocode'}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-12 py-10">
+                                                            <div className={`inline-flex px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.25em] transition-all duration-500 shadow-sm border ${w.is_open
+                                                                ? 'bg-green-500 text-white border-green-400 shadow-[0_10px_20px_rgba(34,197,94,0.1)]'
+                                                                : 'bg-red-500 text-white border-red-400 shadow-[0_10px_20px_rgba(239,68,68,0.1)]'
+                                                                }`}>
+                                                                <span className="flex items-center">
+                                                                    <span className={`w-1.5 h-1.5 rounded-full mr-2.5 bg-white animate-pulse`}></span>
+                                                                    {w.is_open ? 'Open' : 'Closed'}
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-12 py-10 text-right">
+                                                            <div className="flex justify-end space-x-4">
+                                                                <button
+                                                                    onClick={() => handleOpenModal(w)}
+                                                                    className="w-14 h-14 flex items-center justify-center bg-white/60 backdrop-blur-md text-blue-500 rounded-full border border-white shadow-sm hover:bg-blue-600 hover:text-white hover:-translate-y-1.5 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-90"
+                                                                >
+                                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => confirmDelete(w)}
+                                                                    className="w-14 h-14 flex items-center justify-center bg-white/60 backdrop-blur-md text-red-500 rounded-full border border-white shadow-sm hover:bg-red-600 hover:text-white hover:-translate-y-1.5 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-90"
+                                                                >
+                                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            }
+                                        });
+                                    })()}
                                 </tbody>
                             </table>
                         </div>
+
+                        {/* Pagination UI - Only shown if more than 1 page */}
+                        {!loading && (activeTab === 'users' ? users.length : workshops.length) > ITEMS_PER_PAGE && (
+                            <div className="bg-white/30 backdrop-blur-xl border-t border-white/40 px-12 py-8 flex items-center justify-between">
+                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                                    Showing <span className="text-gray-900">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to <span className="text-gray-900">{Math.min(currentPage * ITEMS_PER_PAGE, (activeTab === 'users' ? users.length : workshops.length))}</span> of <span className="text-gray-900">{activeTab === 'users' ? users.length : workshops.length}</span> Results
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                        disabled={currentPage === 1}
+                                        className="w-12 h-12 flex items-center justify-center bg-white/60 border border-white rounded-xl text-gray-400 hover:bg-gray-900 hover:text-white disabled:opacity-30 disabled:hover:bg-white/60 disabled:hover:text-gray-400 transition-all duration-300"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
+                                    </button>
+
+                                    {Array.from({ length: Math.ceil((activeTab === 'users' ? users.length : workshops.length) / ITEMS_PER_PAGE) }).map((_, i) => (
+                                        <button
+                                            key={i + 1}
+                                            type="button"
+                                            onClick={() => setCurrentPage(i + 1)}
+                                            className={`w-12 h-12 flex items-center justify-center rounded-xl text-[10px] font-black transition-all duration-300 ${currentPage === i + 1 ? 'bg-orange-600 text-white shadow-lg shadow-orange-500/20' : 'bg-white/60 border border-white text-gray-400 hover:bg-white hover:text-gray-900'}`}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    ))}
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setCurrentPage(prev => Math.min(Math.ceil((activeTab === 'users' ? users.length : workshops.length) / ITEMS_PER_PAGE), prev + 1))}
+                                        disabled={currentPage === Math.ceil((activeTab === 'users' ? users.length : workshops.length) / ITEMS_PER_PAGE)}
+                                        className="w-12 h-12 flex items-center justify-center bg-white/60 border border-white rounded-xl text-gray-400 hover:bg-gray-900 hover:text-white disabled:opacity-30 disabled:hover:bg-white/60 disabled:hover:text-gray-400 transition-all duration-300"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

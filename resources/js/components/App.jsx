@@ -283,12 +283,19 @@ const MapCenterer = ({ coords }) => {
     return null;
 };
 
-const Hero = ({ onSearch }) => {
+const Hero = ({ onSearch, onUseLocation }) => {
     const [query, setQuery] = useState('');
+    const [isLocating, setIsLocating] = useState(false);
+
     const handleSearch = () => {
         if (query.trim()) {
             onSearch(query);
         }
+    };
+
+    const handleLocate = () => {
+        setIsLocating(true);
+        onUseLocation(() => setIsLocating(false));
     };
 
     return (
@@ -324,12 +331,28 @@ const Hero = ({ onSearch }) => {
                                 onChange={(e) => setQuery(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                                 placeholder="Masukkan lokasi Anda..."
-                                className="bg-transparent border-none outline-none text-gray-800 font-bold w-full placeholder:text-gray-400"
+                                className="bg-transparent border-none outline-none text-gray-900 font-black w-full placeholder:text-gray-400 text-lg"
                             />
+                            <button
+                                onClick={handleLocate}
+                                disabled={isLocating}
+                                className={`p-3 rounded-xl transition-all ${isLocating ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500 hover:bg-orange-600 hover:text-white hover:scale-110 active:scale-90'} shadow-sm border border-white relative group/loc`}
+                                title="Gunakan Lokasi Saat Ini"
+                            >
+                                {isLocating ? (
+                                    <div className="w-5 h-5 border-2 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <circle cx="12" cy="11" r="3" strokeWidth="2.5" />
+                                    </svg>
+                                )}
+                                <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] font-black px-3 py-1.5 rounded-lg opacity-0 group-hover/loc:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">📍 Deteksi Lokasi</div>
+                            </button>
                         </div>
                         <button
                             onClick={handleSearch}
-                            className="w-full sm:w-auto px-10 py-4 bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-300 hover:bg-orange-500 hover:shadow-orange-400 transition-all active:scale-95 leading-none"
+                            className="w-full sm:w-auto px-10 py-5 bg-orange-600 text-white font-black rounded-xl shadow-xl shadow-orange-300 hover:bg-orange-500 hover:-translate-y-0.5 active:scale-95 transition-all leading-none uppercase tracking-[0.1em] text-sm"
                         >
                             Cari Terdekat
                         </button>
@@ -1027,20 +1050,41 @@ const App = () => {
                             <Dashboard user={user} />
                         ) : (
                             <>
-                                <Hero onSearch={async (query) => {
-                                    try {
-                                        const response = await axios.get(`/api/geocode?q=${encodeURIComponent(query)}`);
-                                        if (response.data && response.data.location) {
-                                            const [lat, lng] = response.data.location.split(',');
-                                            navigate(`/results?lat=${lat}&lng=${lng}&q=${encodeURIComponent(query)}`);
-                                        } else {
-                                            alert("Lokasi tidak ditemukan. Silakan coba kata kunci lain.");
+                                <Hero 
+                                    onSearch={async (query) => {
+                                        try {
+                                            const response = await axios.get(`/api/geocode?q=${encodeURIComponent(query)}`);
+                                            if (response.data && response.data.location) {
+                                                const [lat, lng] = response.data.location.split(',');
+                                                navigate(`/results?lat=${lat}&lng=${lng}&q=${encodeURIComponent(query)}`);
+                                            } else {
+                                                alert("Lokasi tidak ditemukan. Silakan coba kata kunci lain.");
+                                            }
+                                        } catch (error) {
+                                            console.error("Geocoding failed:", error);
+                                            alert("Terjadi kesalahan saat mencari lokasi.");
                                         }
-                                    } catch (error) {
-                                        console.error("Geocoding failed:", error);
-                                        alert("Terjadi kesalahan saat mencari lokasi.");
-                                    }
-                                }} />
+                                    }} 
+                                    onUseLocation={(callback) => {
+                                        if ("geolocation" in navigator) {
+                                            navigator.geolocation.getCurrentPosition(
+                                                (position) => {
+                                                    const { latitude, longitude } = position.coords;
+                                                    navigate(`/results?lat=${latitude}&lng=${longitude}&q=Lokasi+Anda`);
+                                                    if (callback) callback();
+                                                },
+                                                (error) => {
+                                                    console.error("Geolocation error:", error);
+                                                    alert("Izin lokasi ditolak atau tidak tersedia.");
+                                                    if (callback) callback();
+                                                }
+                                            );
+                                        } else {
+                                            alert("Browser Anda tidak mendukung geolokasi.");
+                                            if (callback) callback();
+                                        }
+                                    }}
+                                />
                                 <Solutions />
                                 <Partners />
                             </>
