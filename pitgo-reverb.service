@@ -1,0 +1,17 @@
+[Unit]
+Description=PitGO Laravel Reverb WebSocket Server
+After=network.target postgresql.service pitgo-php.service
+
+[Service]
+Type=simple
+User=mannn
+WorkingDirectory=/home/mannn/PitGO
+ExecStart=/usr/bin/php artisan reverb:start --host=127.0.0.1 --port=6001
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+Environment=PATH=/home/mannn/.nvm/versions/node/v24.14.1/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target

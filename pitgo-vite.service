@@ -1,0 +1,17 @@
+[Unit]
+Description=PitGO Vite Build Watcher
+After=network.target
+
+[Service]
+Type=simple
+User=mannn
+WorkingDirectory=/home/mannn/PitGO
+ExecStart=/home/mannn/.nvm/versions/node/v24.14.1/bin/npm run build
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+Environment=PATH=/home/mannn/.nvm/versions/node/v24.14.1/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target
