@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_sqlite bcmath
+RUN docker-php-ext-install pdo pdo_sqlite bcmath mbstring
 
 # Install PostgreSQL driver
 RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && \
@@ -59,7 +59,7 @@ COPY --from=frontend-builder /app/public/build ./public/build
 COPY --from=frontend-builder /app/node_modules ./node_modules
 
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-ansi
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-ansi -vvv
 
 # Set permissions
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
