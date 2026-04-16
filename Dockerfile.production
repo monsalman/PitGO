@@ -17,10 +17,10 @@ RUN npm run build
 # PHP production stage
 FROM php:8.2-fpm-alpine
 
-# Install runtime dependencies
+# Install system dependencies
 RUN apk add --no-cache \
     postgresql-client \
-    sqlite-libs \
+    sqlite \
     curl \
     zip \
     unzip \
@@ -28,37 +28,25 @@ RUN apk add --no-cache \
     supervisor \
     nginx
 
-# Install build dependencies for PHP extensions compilation
+# Install build dependencies, compile extensions, then remove build deps
 RUN apk add --no-cache --virtual .build-deps \
-    postgresql-dev \
-    sqlite-dev \
-    libc-dev \
-    autoconf \
-    g++ \
-    gcc \
-    make \
-    linux-headers \
-    pkgconfig
-
-# Install PHP extensions with configure options
-RUN docker-php-ext-configure pdo_pgsql && \
-    docker-php-ext-install -j$(nproc) \
-    pdo \
-    pdo_pgsql \
-    pdo_sqlite \
-    bcmath \
-    ctype \
-    mbstring \
-    openssl \
-    tokenizer \
-    xml
-
-# Install Redis extension
-RUN pecl install redis && \
-    docker-php-ext-enable redis
-
-# Remove build dependencies
-RUN apk del --no-cache .build-deps
+        postgresql-dev \
+        autoconf \
+        gcc \
+        g++ \
+        make \
+        libc-dev && \
+    \
+    docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        pdo_sqlite \
+        bcmath && \
+    \
+    pecl install redis && \
+    docker-php-ext-enable redis && \
+    \
+    apk del .build-deps
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
