@@ -1,0 +1,86 @@
+app:
+  name: PitGO
+  description: PitGO - Modern Laravel + React Application
+  type: docker
+
+services:
+  - name: pitgo-app
+    description: PitGO Laravel Application
+    type: docker
+    
+    # Docker image configuration
+    docker:
+      dockerfile: Dockerfile.production
+      context: .
+      buildArgs: {}
+
+    # Ports configuration
+    ports:
+      - internal: 8000
+        external: 80
+        protocol: http
+      - internal: 6001
+        external: 6001
+        protocol: ws
+
+    # Environment variables
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: https://pitgo.sudoman.my.id
+      BROADCAST_CONNECTION: reverb
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: ${REDIS_PORT}
+      QUEUE_CONNECTION: redis
+
+    # Health check
+    healthCheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30
+      timeout: 10
+      retries: 3
+      startPeriod: 40
+
+    # Volume mounts
+    volumes:
+      - pitgo-storage:/app/storage
+      - pitgo-bootstrap:/app/bootstrap/cache
+
+    # Domain and SSL configuration
+    domains:
+      - domain: pitgo.sudoman.my.id
+        https: true
+        certManager: letsencrypt
+
+    # Resource limits
+    resources:
+      cpus: "2"
+      memory: 1024M
+      memorySwap: 1024M
+
+    # Restart policy
+    restartPolicy:
+      condition: always
+      delay: 5
+      maxAttempts: 5
+      window: 120
+
+volumes:
+  pitgo-storage: {}
+  pitgo-bootstrap: {}
+
+networks:
+  - pitgo-network
+
+backup:
+  enabled: true
+  schedule: "0 2 * * *"
+  retention: 7

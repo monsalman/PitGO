@@ -1,0 +1,85 @@
+# Build stage
+FROM node:18-alpine as frontend-builder
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --legacy-peer-deps
+
+# Copy frontend source
+COPY vite.config.js ./
+COPY resources ./resources
+COPY public ./public
+
+# Build frontend
+RUN npm run build
+
+# PHP production stage
+FROM php:8.2-fpm-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+    postgresql-client \
+    sqlite \
+    curl \
+    zip \
+    unzip \
+    git \
+    supervisor \
+    nginx
+
+# Install PHP extensions
+RUN docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    pdo_sqlite \
+    bcmath \
+    ctype \
+    fileinfo \
+    json \
+    mbstring \
+    openssl \
+    tokenizer \
+    xml
+
+# Install Redis extension
+RUN apk add --no-cache --virtual .redis-deps autoconf g++ make && \
+    pecl install redis && \
+    docker-php-ext-enable redis && \
+    apk del .redis-deps
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+# Copy application files
+COPY . .
+
+# Copy built frontend
+COPY --from=frontend-builder /app/public/build ./public/build
+COPY --from=frontend-builder /app/node_modules ./node_modules
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-ansi
+
+# Set permissions
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+
+# Copy supervisor config
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/http.d/default.conf
+
+# Expose ports
+EXPOSE 8000 6001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

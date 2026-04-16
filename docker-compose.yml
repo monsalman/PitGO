@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    container_name: pitgo-app
+    restart: unless-stopped
+    working_dir: /app
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: pitgo_db
+      DB_USERNAME: pitgo_user
+      DB_PASSWORD: pitgo_password
+      BROADCAST_CONNECTION: reverb
+      QUEUE_CONNECTION: redis
+      REDIS_HOST: redis
+      REDIS_PASSWORD: redis_password
+      REDIS_PORT: 6379
+      SESSION_DRIVER: cookie
+      CACHE_DRIVER: redis
+    ports:
+      - "8000:8000"
+      - "6001:6001"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./storage:/app/storage
+      - ./bootstrap/cache:/app/bootstrap/cache
+    networks:
+      - pitgo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: pitgo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pitgo_db
+      POSTGRES_USER: pitgo_user
+      POSTGRES_PASSWORD: pitgo_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pitgo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pitgo_user -d pitgo_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: pitgo-redis
+    restart: unless-stopped
+    command: redis-server --requirepass redis_password --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - pitgo-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+networks:
+  pitgo-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
