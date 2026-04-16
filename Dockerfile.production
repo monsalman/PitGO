@@ -14,8 +14,8 @@ RUN npm ci --legacy-peer-deps
 # Build frontend
 RUN npm run build
 
-# PHP production stage - using Debian for better compatibility
-FROM php:8.2-fpm
+# PHP production stage - using PHP 8.4 for Laravel 12 compatibility
+FROM php:8.4-fpm
 
 # Install system dependencies and build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
