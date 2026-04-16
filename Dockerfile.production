@@ -58,7 +58,8 @@ COPY . .
 COPY --from=frontend-builder /app/public/build ./public/build
 COPY --from=frontend-builder /app/node_modules ./node_modules
 
-# Install PHP dependencies
+# Install PHP dependencies with unlimited memory
+ENV COMPOSER_MEMORY_LIMIT=-1
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-ansi -vvv
 
 # Set permissions
