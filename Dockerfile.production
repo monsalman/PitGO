@@ -37,6 +37,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_sqlite bcmath
 
+# Install XML extension (needed by many Laravel packages including Cloudinary)
+RUN docker-php-ext-install xml
+
 # Install PostgreSQL driver
 RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && \
     docker-php-ext-install pdo_pgsql && \
@@ -60,7 +63,10 @@ COPY --from=frontend-builder /app/node_modules ./node_modules
 
 # Install PHP dependencies with unlimited memory
 ENV COMPOSER_MEMORY_LIMIT=-1
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-ansi -vvv
+RUN echo "=== PHP Version ===" && php -v && \
+    echo "=== PHP Extensions ===" && php -m && \
+    echo "=== Starting composer install ===" && \
+    composer install --no-dev --optimize-autoloader --no-interaction --no-ansi -vvv
 
 # Set permissions
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
