@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_sqlite bcmath mbstring
+RUN docker-php-ext-install pdo pdo_sqlite bcmath
 
 # Install PostgreSQL driver
 RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && \
