@@ -76,7 +76,7 @@ RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy nginx config
-COPY nginx.conf /etc/nginx/http.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose ports
 EXPOSE 8000 6001
