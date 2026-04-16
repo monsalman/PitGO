@@ -17,8 +17,9 @@ RUN npm run build
 # PHP production stage - using Debian for better compatibility
 FROM php:8.2-fpm
 
-# Install system dependencies
+# Install system dependencies and build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
     postgresql-client \
     sqlite3 \
     curl \
@@ -40,7 +41,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Redis
-RUN pecl install redis && docker-php-ext-enable redis
+RUN apt-get update && apt-get install -y --no-install-recommends autoconf && \
+    pecl install redis && \
+    docker-php-ext-enable redis && \
+    apt-get remove -y autoconf && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
