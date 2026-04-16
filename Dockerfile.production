@@ -72,6 +72,9 @@ RUN echo "=== PHP Version ===" && php -v && \
 # Set permissions
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
+# Ensure .env exists (use .env.example as fallback for Docker builds)
+RUN if [ ! -f /app/.env ]; then cp /app/.env.example /app/.env; fi
+
 # Copy supervisor config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
