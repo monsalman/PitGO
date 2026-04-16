@@ -83,7 +83,7 @@ EXPOSE 8000 6001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -s -w "%{http_code}" http://127.0.0.1:8000/health -o /dev/null | grep -q "200" || exit 1
 
 # Start supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
