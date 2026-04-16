@@ -14,39 +14,33 @@ RUN npm ci --legacy-peer-deps
 # Build frontend
 RUN npm run build
 
-# PHP production stage
-FROM php:8.2-fpm-alpine
+# PHP production stage - using Debian for better compatibility
+FROM php:8.2-fpm
 
 # Install system dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
-    sqlite \
+    sqlite3 \
     curl \
     zip \
     unzip \
     git \
     supervisor \
-    nginx
+    nginx \
+    ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install build dependencies, compile extensions, then remove build deps
-RUN apk add --no-cache --virtual .build-deps \
-        postgresql-dev \
-        autoconf \
-        gcc \
-        g++ \
-        make \
-        libc-dev && \
-    \
-    docker-php-ext-install \
-        pdo \
-        pdo_pgsql \
-        pdo_sqlite \
-        bcmath && \
-    \
-    pecl install redis && \
-    docker-php-ext-enable redis && \
-    \
-    apk del .build-deps
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_sqlite bcmath
+
+# Install PostgreSQL driver
+RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && \
+    docker-php-ext-install pdo_pgsql && \
+    apt-get remove -y libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Redis
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
