@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_sqlite bcmath
+RUN docker-php-ext-install pdo pdo_sqlite bcmath pcntl sockets
 
 # Install XML extension (needed by many Laravel packages including Cloudinary)
 RUN docker-php-ext-install xml
