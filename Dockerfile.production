@@ -75,6 +75,10 @@ RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 # Ensure .env exists (use .env.example as fallback for Docker builds)
 RUN if [ ! -f /app/.env ]; then cp /app/.env.example /app/.env; fi
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Copy supervisor config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
@@ -88,5 +92,5 @@ EXPOSE 8000 6001
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 #     CMD curl -s -w "%{http_code}" http://127.0.0.1:8000/health -o /dev/null | grep -q "200" || exit 1
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start application via entrypoint script
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
