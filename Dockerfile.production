@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     autoconf \
     pkg-config \
     libsqlite3-dev \
+    libxml2-dev \
     postgresql-client \
     sqlite3 \
     curl \
