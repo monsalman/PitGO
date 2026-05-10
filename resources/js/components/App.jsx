@@ -194,7 +194,13 @@ const Dashboard = ({ user, onBookingClick, setUserLocation: setParentLocation, s
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <button className="py-4 bg-white border border-gray-100 text-gray-900 text-sm font-black rounded-xl hover:bg-gray-50 transition-all shadow-sm">Profil</button>
-                                                        <button className="py-4 bg-orange-600 text-white text-sm font-black rounded-xl shadow-xl shadow-orange-100 hover:bg-orange-500 transition-all uppercase tracking-widest">Booking</button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleBookingClick(shop)}
+                                                            className="py-4 bg-orange-600 text-white text-sm font-black rounded-xl shadow-xl shadow-orange-100 hover:bg-orange-500 transition-all uppercase tracking-widest"
+                                                        >
+                                                            Booking
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </Popup>
@@ -626,7 +632,13 @@ const SearchResults = ({ onBookingClick, setUserLocation: setParentLocation, set
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <button className="py-4 bg-white border border-gray-100 text-gray-900 text-sm font-black rounded-xl hover:bg-gray-50 transition-all shadow-sm">Profil</button>
-                                                        <button className="py-4 bg-orange-600 text-white text-sm font-black rounded-xl shadow-xl shadow-orange-100 hover:bg-orange-500 transition-all">Booking</button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleBookingClick(shop)}
+                                                            className="py-4 bg-orange-600 text-white text-sm font-black rounded-xl shadow-xl shadow-orange-100 hover:bg-orange-500 transition-all"
+                                                        >
+                                                            Booking
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </Popup>

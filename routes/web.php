@@ -23,10 +23,11 @@ Route::get('/api/geocode', [WorkshopController::class, 'geocodeApi']);
 Route::get('/api/reverse-geocode', [WorkshopController::class, 'reverseGeocodeApi']);
 
 use App\Http\Controllers\BookingController;
-Route::middleware('auth:sanctum')->group(function () {
+Route::post('/api/bookings', [BookingController::class, 'store']);
+Route::get('/api/bookings/{id}', [BookingController::class, 'show']);
+
+Route::middleware('auth')->group(function () {
     Route::get('/api/bookings', [BookingController::class, 'index']);
-    Route::post('/api/bookings', [BookingController::class, 'store']);
-    Route::get('/api/bookings/{id}', [BookingController::class, 'show']);
     Route::put('/api/bookings/{id}/accept', [BookingController::class, 'accept']);
     Route::put('/api/bookings/{id}/status', [BookingController::class, 'updateStatus']);
     Route::put('/api/bookings/{id}/mechanic-location', [BookingController::class, 'updateMechanicLocation']);

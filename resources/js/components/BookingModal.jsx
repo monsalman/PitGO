@@ -16,6 +16,8 @@ const reverseGeocode = async (lat, lon) => {
 const BookingModal = ({ isOpen, onClose, workshop, userLocation, userAddress }) => {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [addressLoading, setAddressLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         vehicle_type: 'motor',
         vehicle_brand: '',
@@ -53,6 +55,7 @@ const BookingModal = ({ isOpen, onClose, workshop, userLocation, userAddress }) 
 
             const updateAddress = async () => {
                 // Set temporary loading state
+                setAddressLoading(true);
                 setFormData(prev => ({ ...prev, detected_address: 'Mengambil alamat...' }));
 
                 try {
@@ -62,6 +65,8 @@ const BookingModal = ({ isOpen, onClose, workshop, userLocation, userAddress }) 
                 } catch (error) {
                     console.error("Effect geocode error:", error);
                     setFormData(prev => ({ ...prev, detected_address: `Koordinat: ${lat.toFixed(6)}, ${lng.toFixed(6)}` }));
+                } finally {
+                    setAddressLoading(false);
                 }
             };
 
@@ -160,7 +165,18 @@ const BookingModal = ({ isOpen, onClose, workshop, userLocation, userAddress }) 
 
     const handleSubmit = async () => {
         setLoading(true);
+        setErrorMessage('');
         try {
+            if (!formData.user_location) {
+                setErrorMessage('Lokasi belum siap. Izinkan akses lokasi lalu coba lagi.');
+                return;
+            }
+
+            if (addressLoading || !formData.detected_address || formData.detected_address === 'Mengambil alamat...') {
+                setErrorMessage('Alamat belum selesai dimuat. Tunggu sebentar lalu coba lagi.');
+                return;
+            }
+
             // Combine detected address and additional details for the backend
             const finalAddress = formData.additional_details
                 ? `${formData.detected_address} (${formData.additional_details})`
@@ -179,7 +195,15 @@ const BookingModal = ({ isOpen, onClose, workshop, userLocation, userAddress }) 
             window.location.href = `/booking/${res.data.id}`;
         } catch (err) {
             console.error("Booking failed:", err);
-            alert("Gagal melakukan booking. Silakan coba lagi.");
+            const validationError = err.response?.data?.errors
+                ? Object.values(err.response.data.errors).flat().filter(Boolean)[0]
+                : null;
+            setErrorMessage(
+                validationError
+                || err.response?.data?.message
+                || err.response?.data?.error
+                || 'Gagal melakukan booking. Silakan coba lagi.'
+            );
         } finally {
             setLoading(false);
         }
@@ -418,6 +442,12 @@ const BookingModal = ({ isOpen, onClose, workshop, userLocation, userAddress }) 
                             </div>
                         </div>
                     )}
+
+                    {errorMessage && (
+                        <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-700 text-sm font-bold">
+                            {errorMessage}
+                        </div>
+                    )}
                 </div>
 
                 {/* Footer */}
@@ -431,11 +461,15 @@ const BookingModal = ({ isOpen, onClose, workshop, userLocation, userAddress }) 
                         </button>
                     )}
                     <button
-                        disabled={loading || (step === 2 && !formData.vehicle_brand) || (step === 3 && !formData.problem_category)}
+                        disabled={loading || addressLoading || (step === 2 && !formData.vehicle_brand) || (step === 3 && !formData.problem_category) || ((step === 4 || step === 5) && (!formData.user_location || !formData.detected_address || formData.detected_address === 'Mengambil alamat...'))}
                         onClick={() => {
                             if (step === 5) {
                                 handleSubmit();
                             } else {
+                                if (step === 4 && (!formData.user_location || !formData.detected_address || formData.detected_address === 'Mengambil alamat...')) {
+                                    setErrorMessage('Lokasi belum siap. Tunggu sampai alamat terdeteksi.');
+                                    return;
+                                }
                                 if (step === 3) {
                                     // Pre-fetch location before entering Step 4
                                     handleRefreshLocation();
@@ -444,7 +478,7 @@ const BookingModal = ({ isOpen, onClose, workshop, userLocation, userAddress }) 
                             }
                         }}
                         className={`flex-[2] py-5 font-black rounded-[1.5rem] transition-all active:scale-95 uppercase tracking-widest text-sm flex items-center justify-center space-x-3
-                            ${loading || (step === 2 && !formData.vehicle_brand) || (step === 3 && !formData.problem_category)
+                            ${loading || addressLoading || (step === 2 && !formData.vehicle_brand) || (step === 3 && !formData.problem_category) || ((step === 4 || step === 5) && (!formData.user_location || !formData.detected_address || formData.detected_address === 'Mengambil alamat...'))
                                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                 : 'bg-orange-600 text-white shadow-2xl shadow-orange-200 hover:bg-orange-500'}`}
                     >
